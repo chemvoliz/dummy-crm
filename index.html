@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise CRM - Customer Portal</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { text-align: left; padding: 12px; border-bottom: 1px solid #eee; }
+        th { background: #3498db; color: white; }
+        .pii-label { color: #e74c3c; font-weight: bold; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Global Sales CRM <small style="font-size: 0.5em; color: gray;">Internal Only</small></h1>
+        <p>Welcome, <strong>Sales Lead</strong>. Below is the sensitive customer data for the Q3 pipeline.</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Customer Name</th>
+                    <th>Email Address</th>
+                    <th>Credit Card (PII)</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Doe</td>
+                    <td>j.doe@example.com</td>
+                    <td>4532-7812-9012-4456</td>
+                    <td><span style="color: green;">Active</span></td>
+                </tr>
+                <tr>
+                    <td>Jane Smith</td>
+                    <td>jane.smith@corporation.org</td>
+                    <td>5105-1122-3344-5566</td>
+                    <td><span style="color: orange;">Pending</span></td>
+                </tr>
+                <tr>
+                    <td>Alice Johnson</td>
+                    <td>alice.j@startup.io</td>
+                    <td>3782-8224-5671-0001</td>
+                    <td><span style="color: green;">Active</span></td>
+                </tr>
+            </tbody>
+        </table>
+        <p style="margin-top: 40px; font-size: 0.9em; color: #7f8c8d;">
+            <em>Note: This page is subject to corporate data handling policies. Unauthorised distribution is prohibited.</em>
+        </p>
+    </div>
+</body>
+</html>
