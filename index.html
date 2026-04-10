@@ -161,7 +161,9 @@
 
     <main>
         <header>
-            <div class="search-container"><input type="text" placeholder="Cari NIK, Nama, atau NPWP..."></div>
+            <div class="search-container">
+                <input type="text" id="search-input" oninput="handleSearch()" placeholder="Cari NIK, Nama, atau NPWP...">
+            </div>
             <div style="display: flex; align-items: center; gap: 15px;">
                 <span style="font-size: 0.85rem; color: var(--text-light);">Wilayah: <strong>DKI Jakarta</strong></span>
                 <div style="width: 35px; height: 35px; border-radius: 50%; background: #e2e8f0; border: 2px solid var(--accent);"></div>
@@ -202,7 +204,7 @@
                     <h1 style="margin: 0;">Kontak & Prospek Strategis</h1>
                     <p style="color: var(--text-light); margin: 5px 0 0 0;">Menampilkan entitas bisnis dengan proteksi data pribadi tingkat tinggi.</p>
                 </div>
-                <div style="font-size: 0.8rem; color: var(--text-light);">Total: <strong id="total-count">100</strong> Data</div>
+                <div style="font-size: 0.8rem; color: var(--text-light);">Hasil: <strong id="total-count">100</strong> Data</div>
             </div>
             <div class="card">
                 <table>
@@ -329,6 +331,7 @@
         // --- APP LOGIC ---
         let currentPage = 1;
         const rowsPerPage = 10;
+        let searchTerm = "";
 
         function switchView(view) {
             document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
@@ -337,15 +340,32 @@
             document.getElementById('menu-' + (view === 'dashboard' ? 'dash' : (view === 'contacts' ? 'contacts' : (view === 'pipeline' ? 'pipe' : (view === 'automation' ? 'auto' : 'reports'))))).classList.add('active');
         }
 
+        function handleSearch() {
+            searchTerm = document.getElementById('search-input').value.toLowerCase();
+            currentPage = 1; // Reset to first page on new search
+            renderTable();
+        }
+
         function renderTable() {
             const table = document.getElementById('contact-table');
             table.innerHTML = "";
+
+            // Apply search filtering
+            const filteredData = indoData.filter(d => 
+                d.name.toLowerCase().includes(searchTerm) || 
+                d.nik.toLowerCase().includes(searchTerm) || 
+                d.npwp.toLowerCase().includes(searchTerm)
+            );
+
+            document.getElementById('total-count').innerText = filteredData.length;
+
             const start = (currentPage - 1) * rowsPerPage;
             const end = start + rowsPerPage;
-            const pageData = indoData.slice(start, end);
+            const pageData = filteredData.slice(start, end);
 
-            pageData.forEach((d, index) => {
-                const globalIndex = start + index;
+            pageData.forEach((d) => {
+                // Find global index in original array for openDrawer
+                const globalIndex = indoData.indexOf(d);
                 const tr = document.createElement('tr');
                 tr.onclick = () => openDrawer(globalIndex);
                 tr.innerHTML = `
@@ -357,25 +377,30 @@
                 `;
                 table.appendChild(tr);
             });
-            renderPagination();
+            renderPagination(filteredData.length);
         }
 
-        function renderPagination() {
+        function renderPagination(totalItems) {
             const container = document.getElementById('pagination');
             container.innerHTML = "";
-            const totalPages = Math.ceil(indoData.length / rowsPerPage);
+            const totalPages = Math.ceil(totalItems / rowsPerPage);
 
-            // Show first, current, and last pages for brevity
-            const pagesToShow = [1, currentPage, totalPages];
-            const uniquePages = [...new Set(pagesToShow)].sort((a,b) => a-b);
+            if (totalPages <= 1) return;
 
-            uniquePages.forEach(p => {
-                const btn = document.createElement('button');
-                btn.className = `page-btn ${p === currentPage ? 'active' : ''}`;
-                btn.innerText = p;
-                btn.onclick = () => { currentPage = p; renderTable(); };
-                container.appendChild(btn);
-            });
+            // Simple pagination display logic
+            for (let p = 1; p <= totalPages; p++) {
+                if (p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)) {
+                    const btn = document.createElement('button');
+                    btn.className = `page-btn ${p === currentPage ? 'active' : ''}`;
+                    btn.innerText = p;
+                    btn.onclick = () => { currentPage = p; renderTable(); };
+                    container.appendChild(btn);
+                } else if (p === currentPage - 2 || p === currentPage + 2) {
+                    const dot = document.createElement('span');
+                    dot.innerText = "...";
+                    container.appendChild(dot);
+                }
+            }
         }
 
         function openDrawer(i) {
