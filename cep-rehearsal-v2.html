@@ -46,14 +46,13 @@
       position: absolute;
       transform: rotate(-24deg);
       transform-origin: center;
-      color: rgba(220, 38, 38, 0.18);
-      font-size: 24px;
-      letter-spacing: 0.12em;
-      font-weight: 800;
+      color: rgba(220, 38, 38, 0.10);
+      font-size: 20px;
+      letter-spacing: 0.08em;
+      font-weight: 700;
       white-space: nowrap;
       text-transform: uppercase;
       user-select: none;
-      text-shadow: 0 0 1px rgba(255,255,255,0.12);
     }
     nav {
       width: 280px;
@@ -414,6 +413,30 @@
       font-weight: 800;
     }
     .stack { display:grid; gap: 10px; }
+    .explain-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: #f8fafc;
+      padding: 14px;
+      color: var(--text);
+    }
+    .decision-banner {
+      margin-top: 18px;
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-weight: 700;
+      line-height: 1.5;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+    }
+    .decision-banner.allow {
+      border-color: rgba(16,185,129,0.35);
+      color: #d1fae5;
+    }
+    .decision-banner.block {
+      border-color: rgba(239,68,68,0.35);
+      color: #fecaca;
+    }
 
     @media (max-width: 1100px) {
       .grid4, .grid3, .grid2, .action-grid, .login-card { grid-template-columns: 1fr; }
@@ -433,6 +456,7 @@
         <h1 style="margin:10px 0 8px; font-size:34px; letter-spacing:-0.04em;">Chrome Enterprise Premium access check</h1>
         <p style="margin:0; color:#cbd5e1; line-height:1.65;">Use this screen to rehearse Context-Aware Access before the CRM opens. In the real environment, Chrome Enterprise Premium evaluates user and device context outside the application itself.</p>
         <div class="criteria" id="criteriaPreview"></div>
+        <div class="decision-banner allow" id="decisionSummary"></div>
       </div>
       <div class="login-pane">
         <div class="kicker">Demo controls</div>
@@ -442,11 +466,12 @@
         <div class="field-row">
           <label for="personaSelect"><strong>Access preset</strong></label>
           <select id="personaSelect" class="select">
-            <option value="trusted">Trusted employee on managed device</option>
-            <option value="unmanaged">Employee on unmanaged device</option>
-            <option value="geoBlocked">Employee outside approved location</option>
-            <option value="policyConflict">Managed device with policy conflict</option>
+            <option value="trusted">Trusted employee on managed Chrome + healthy device</option>
+            <option value="personalApproved">Personal laptop in approved location</option>
+            <option value="geoBlocked">Managed Chrome outside approved location</option>
+            <option value="policyConflict">Managed Chrome with device or policy conflict</option>
           </select>
+          <div class="explain-card" id="personaHelp"></div>
         </div>
 
         <div class="field-row">
@@ -475,7 +500,7 @@
         </div>
 
         <div class="row" style="margin-top:22px;">
-          <button class="btn btn-primary" id="signInBtn">Sign in with Google</button>
+          <button class="btn btn-primary" id="signInBtn" type="button">Sign in with Google</button>
         </div>
         <p class="hint" style="margin-top:16px;">Recommended flow: rehearse with both toggles ON, then switch them OFF during the real managed-Chrome demo.</p>
       </div>
@@ -718,44 +743,48 @@
   <script>
     const personas = {
       trusted: {
-        label: 'Trusted employee on managed device',
+        label: 'Trusted employee on managed Chrome + healthy device',
         deviceId: 'CBCM-BROWSER-MANAGED',
+        help: 'Use this to rehearse the ideal Zero Trust outcome: corporate identity, managed Chrome profile, healthy device posture, and approved location all pass.',
         checks: [
           ['Corporate identity', true, 'Signed in with approved Google Workspace account'],
-          ['Managed Chrome profile', true, 'Browser profile is managed'],
-          ['Approved device posture', true, 'Endpoint verification healthy'],
+          ['Managed Chrome profile', true, 'Browser profile is managed by enterprise policy'],
+          ['Approved device posture', true, 'Endpoint Verification or partner posture signal is healthy'],
           ['Allowed location', true, 'Request comes from allowed region / network'],
           ['No policy conflicts', true, 'No high-risk policy state detected']
         ]
       },
-      unmanaged: {
-        label: 'Employee on unmanaged device',
-        deviceId: 'UNMANAGED-BROWSER',
+      personalApproved: {
+        label: 'Personal laptop in approved location',
+        deviceId: 'PERSONAL-LAPTOP',
+        help: 'This is the easiest way to explain Zero Trust to a first-time audience: the user is in an approved location, but the browser profile is unmanaged and the device posture signal is missing, so access is denied.',
         checks: [
           ['Corporate identity', true, 'Signed in with approved Google Workspace account'],
-          ['Managed Chrome profile', false, 'Profile is not managed by policy'],
-          ['Approved device posture', false, 'Endpoint verification missing'],
+          ['Managed Chrome profile', false, 'Chrome is not managed by enterprise policy'],
+          ['Approved device posture', false, 'Endpoint Verification or partner posture data is unavailable'],
           ['Allowed location', true, 'Location is allowed'],
           ['No policy conflicts', true, 'No additional conflict detected']
         ]
       },
       geoBlocked: {
-        label: 'Employee outside approved location',
+        label: 'Managed Chrome outside approved location',
         deviceId: 'CBCM-BROWSER-MANAGED',
+        help: 'Use this to show that good identity and healthy device posture are still not enough when geography or network rules are part of the access level.',
         checks: [
           ['Corporate identity', true, 'Signed in with approved Google Workspace account'],
-          ['Managed Chrome profile', true, 'Browser profile is managed'],
-          ['Approved device posture', true, 'Endpoint verification healthy'],
+          ['Managed Chrome profile', true, 'Browser profile is managed by enterprise policy'],
+          ['Approved device posture', true, 'Endpoint Verification or partner posture signal is healthy'],
           ['Allowed location', false, 'Request is outside approved geography / IP range'],
           ['No policy conflicts', true, 'No additional conflict detected']
         ]
       },
       policyConflict: {
-        label: 'Managed device with policy conflict',
+        label: 'Managed Chrome with device or policy conflict',
         deviceId: 'CBCM-BROWSER-MANAGED',
+        help: 'Use this to show that a managed browser alone is not enough. Access can still fail when the posture signal is unhealthy or another high-risk policy conflict is present.',
         checks: [
           ['Corporate identity', true, 'Signed in with approved Google Workspace account'],
-          ['Managed Chrome profile', true, 'Browser profile is managed'],
+          ['Managed Chrome profile', true, 'Browser profile is managed by enterprise policy'],
           ['Approved device posture', false, 'Device posture flagged non-compliant'],
           ['Allowed location', true, 'Location is allowed'],
           ['No policy conflicts', false, 'Critical policy conflict found during evaluation']
@@ -888,11 +917,24 @@
     function updateCriteriaPreview() {
       const persona = getSelectedPersona();
       const container = document.getElementById('criteriaPreview');
+      const failed = persona.checks.filter(([, pass]) => !pass);
       container.innerHTML = persona.checks.map(([label, pass, note]) => `
         <div class="criteria-row ${pass ? 'pass' : 'fail'}">
           <div><strong>${label}</strong><div style="margin-top:4px; color:#cbd5e1; font-size:13px;">${note}</div></div>
           <div class="${pass ? 'status-pass' : 'status-fail'}">${pass ? 'PASS' : 'FAIL'}</div>
         </div>`).join('');
+      document.getElementById('personaHelp').innerHTML = `<strong>What this preset means</strong><div style="margin-top:6px;" class="hint">${escapeHTML(persona.help)}</div>`;
+      const summary = document.getElementById('decisionSummary');
+      const signInBtn = document.getElementById('signInBtn');
+      if (failed.length) {
+        summary.className = 'decision-banner block';
+        summary.innerHTML = `<strong>Current result: access will be blocked.</strong><div style="margin-top:6px; font-weight:500; color:#fecaca;">Reason: one or more required checks are FAIL. This is useful to explain Zero Trust to first-time viewers.</div>`;
+        signInBtn.textContent = 'Sign in with Google';
+      } else {
+        summary.className = 'decision-banner allow';
+        summary.innerHTML = `<strong>Current result: access will be granted.</strong><div style="margin-top:6px; font-weight:500; color:#d1fae5;">Reason: every required check is PASS, so the CRM will open when you click Sign in.</div>`;
+        signInBtn.textContent = 'Sign in with Google';
+      }
       refreshAccessMeta();
     }
 
@@ -969,13 +1011,12 @@
         return;
       }
 
-      const customText = 'CONFIDENTIAL';
-      const text = `${customText} • ${currentIdentity.toUpperCase()} • ${currentDeviceId} • ${accessSessionUTC}`;
+      const text = `CONFIDENTIAL • ${currentIdentity.toUpperCase()} • ${accessSessionUTC}`;
       const tiles = [];
       const width = window.innerWidth;
       const height = window.innerHeight;
-      const colStep = 360;
-      const rowStep = 220;
+      const colStep = 440;
+      const rowStep = 260;
 
       for (let y = -120; y < height + 200; y += rowStep) {
         for (let x = -200; x < width + 300; x += colStep) {
