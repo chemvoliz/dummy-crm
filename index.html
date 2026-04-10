@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus CRM V2 | Enterprise Data Platform (UU PDP Compliant)</title>
+    <title>BukanBankIndonesia CRM | Enterprise Data Platform (UU PDP Compliant)</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,7 +15,6 @@
             --border: #e2e8f0;
             --text-main: #33475b;
             --text-light: #64748b;
-            --google-blue: #4285F4;
         }
 
         * { box-sizing: border-box; }
@@ -43,11 +42,10 @@
             width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 4px;
             background: white; color: #3c4043; font-weight: 500; cursor: pointer; margin-top: 25px;
         }
-        .google-btn:hover { background: #f8f9fa; }
 
         /* Sidebar */
-        nav { width: 260px; background-color: var(--primary); color: white; display: flex; flex-direction: column; flex-shrink: 0; transition: 0.3s; }
-        .logo-section { padding: 25px; font-weight: 600; font-size: 1.2rem; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        nav { width: 280px; background-color: var(--primary); color: white; display: flex; flex-direction: column; flex-shrink: 0; }
+        .logo-section { padding: 25px; font-weight: 700; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); color: #fff; }
         .nav-links { padding: 20px 12px; flex-grow: 1; }
         .nav-item { padding: 12px 16px; margin-bottom: 4px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: #cbd5e1; }
         .nav-item:hover { background: rgba(255,255,255,0.1); color: white; }
@@ -67,24 +65,27 @@
         .funnel-bar { height: 30px; border-radius: 4px; margin-bottom: 10px; display: flex; align-items: center; padding: 0 15px; color: white; font-size: 0.8rem; font-weight: 600; }
 
         /* Tables */
-        .card { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 20px; }
+        .card { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 20px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 12px 15px; font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; border-bottom: 1px solid var(--border); }
         td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
         tr:hover td { background: #f8fafc; cursor: pointer; }
 
-        /* Buttons & Modals */
+        /* Drawer & PII Highlights */
+        #drawer { position: fixed; top: 0; right: -750px; width: 700px; height: 100%; background: white; box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 1001; transition: 0.4s; padding: 30px; overflow-y: auto; }
+        #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; z-index: 1000; }
+        .pii-panel { background: #fff7ed; border: 1px solid #ffedd5; padding: 20px; border-radius: 8px; margin-bottom: 25px; }
+        .section-header { border-bottom: 2px solid var(--border); padding-bottom: 8px; margin: 30px 0 15px 0; font-weight: 600; color: var(--primary); }
+        .pii-tag { color: #f97316; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; border: 1px solid #fdba74; padding: 1px 3px; border-radius: 3px; vertical-align: middle; }
+
+        /* Buttons & Pagination */
         .btn { padding: 12px 24px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
         .btn-primary { background: var(--sap-blue); color: white; }
         .btn-outline { background: white; border: 1px solid var(--border); color: var(--text-main); }
-        .btn-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
+        .pagination { display: flex; justify-content: center; gap: 8px; margin-top: 20px; }
+        .page-btn { padding: 6px 12px; border: 1px solid var(--border); border-radius: 4px; background: white; cursor: pointer; }
+        .page-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
 
-        /* Drawer & Overlays */
-        #drawer { position: fixed; top: 0; right: -750px; width: 700px; height: 100%; background: white; box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 1001; transition: 0.4s; padding: 30px; overflow-y: auto; }
-        #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; z-index: 1000; }
-        .pii-tag { color: #f97316; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; margin-left: 5px; border: 1px solid #fdba74; padding: 2px 4px; border-radius: 3px; }
-
-        /* Modal for Download Choice */
         #download-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 3000; display: none; width: 350px; text-align: center; }
 
         @media print {
@@ -96,94 +97,86 @@
 </head>
 <body>
 
-    <!-- AUTH SCREEN -->
     <div id="login-overlay">
         <div class="login-card">
-            <h2 style="margin:0; color:var(--primary);">Nexus CRM Indonesia</h2>
-            <p style="color:var(--text-light);">Secure Enterprise Access (UU PDP Compliant)</p>
+            <h2 style="margin:0; color:var(--primary);">BukanBankIndonesia CRM</h2>
+            <p style="color:var(--text-light);">Secure Identity Verification Portal</p>
             <button class="google-btn" onclick="mockLogin()">
                 <img src="https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" width="70" alt="Google">
                 Sign in with Google
             </button>
-            <p style="font-size: 0.75rem; margin-top: 20px; color: #999;">Only managed corporate accounts can access this workspace.</p>
         </div>
     </div>
 
     <div id="overlay" onclick="closeDrawer(); closeDownloadModal();"></div>
 
-    <!-- DOWNLOAD CHOICE MODAL -->
     <div id="download-modal">
-        <h3>Export Data</h3>
-        <p style="font-size: 0.9rem; color: var(--text-light);">Choose format for sensitive PII export.</p>
+        <h3>Export Database</h3>
+        <p style="font-size: 0.85rem; color: var(--text-light);">Generating compliance report for all 100 subjects.</p>
         <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
-            <button class="btn btn-outline" onclick="performDownload('CSV')">📥 Download as .CSV</button>
-            <button class="btn btn-outline" onclick="performDownload('PDF')">📄 Download as .PDF</button>
-            <button class="btn btn-danger" onclick="closeDownloadModal()">Cancel</button>
+            <button class="btn btn-outline" onclick="performDownload('CSV')">📥 Export All to CSV</button>
+            <button class="btn btn-outline" onclick="performDownload('PDF')">📄 Export All to PDF</button>
+            <button class="btn btn-outline" style="color:red" onclick="closeDownloadModal()">Cancel</button>
         </div>
     </div>
 
     <nav>
         <div class="logo-section">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
-            NEXUS INDONESIA
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="3" y1="9" x2="21" y2="9"></line><line x1="9" y1="21" x2="9" y2="9"></line></svg>
+            BUKAN BANK INDONESIA
         </div>
         <div class="nav-links">
             <div class="nav-item" id="menu-dash" onclick="switchView('dashboard')">🏠 Dashboard Metrics</div>
             <div class="nav-item active" id="menu-contacts" onclick="switchView('contacts')">👥 Contacts & Leads</div>
             <div class="nav-item" id="menu-pipe" onclick="switchView('pipeline')">📈 Sales Pipeline</div>
             <div class="nav-item" id="menu-data" onclick="switchView('datamgmt')">🛡️ Data Management</div>
-            <div class="nav-item" id="menu-reports" onclick="switchView('reports')">📑 Compliance Logs</div>
         </div>
         <div style="padding: 20px; font-size: 0.7rem; opacity: 0.4;">
-            Session ID: NX-2026-LIVE
+            UU PDP Compliance System
         </div>
     </nav>
 
     <main>
         <header>
-            <div class="search-container"><input type="text" id="search-input" oninput="handleSearch()" placeholder="Search PII Data (NIK, NPWP, Name)..."></div>
+            <div class="search-container"><input type="text" id="search-input" oninput="handleSearch()" placeholder="Cari NIK, Nama, atau NPWP..."></div>
             <div style="display: flex; align-items: center; gap: 15px;">
-                <span id="user-identity" style="font-size: 0.85rem; font-weight: 500;">Admin User</span>
-                <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">A</div>
+                <span style="font-size: 0.85rem;"><strong>Sales Engineer</strong> | Admin</span>
+                <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--accent);"></div>
             </div>
         </header>
 
-        <!-- DASHBOARD VIEW -->
+        <!-- DASHBOARD -->
         <div id="view-dashboard" class="view-content">
             <h1>Workspace Analytics</h1>
             <div class="dashboard-grid">
                 <div class="chart-card">
-                    <h3>Leads Funnel (By Stage)</h3>
-                    <div class="funnel-bar" style="width: 100%; background: #1e293b;">Prospecting (1,240)</div>
-                    <div class="funnel-bar" style="width: 80%; background: #334155;">Qualified (890)</div>
-                    <div class="funnel-bar" style="width: 50%; background: #475569;">Proposal (420)</div>
-                    <div class="funnel-bar" style="width: 25%; background: var(--accent);">Negotiation (110)</div>
+                    <h3>Pipeline Value (IDR)</h3>
+                    <div class="funnel-bar" style="width: 100%; background: #1e293b;">Prospecting (Rp 92B)</div>
+                    <div class="funnel-bar" style="width: 78%; background: #334155;">Qualification (Rp 54B)</div>
+                    <div class="funnel-bar" style="width: 48%; background: var(--sap-blue);">Proposal (Rp 24B)</div>
+                    <div class="funnel-bar" style="width: 22%; background: var(--accent);">Closed Won (Rp 9B)</div>
                 </div>
                 <div class="chart-card">
-                    <h3>Regional Revenue Distribution</h3>
-                    <div style="display: flex; justify-content: space-around; align-items: flex-end; height: 150px; padding-top: 20px;">
-                        <div style="width: 40px; background: var(--sap-blue); height: 90%; border-radius: 4px 4px 0 0;"></div>
-                        <div style="width: 40px; background: var(--sap-blue); height: 60%; border-radius: 4px 4px 0 0;"></div>
-                        <div style="width: 40px; background: var(--sap-blue); height: 40%; border-radius: 4px 4px 0 0;"></div>
-                        <div style="width: 40px; background: var(--sap-blue); height: 75%; border-radius: 4px 4px 0 0;"></div>
+                    <h3>Geography (Top Regions)</h3>
+                    <div style="display:flex; justify-content:space-around; align-items:flex-end; height:120px;">
+                        <div style="height:95%; width:32px; background:var(--sap-blue); border-radius: 4px 4px 0 0;"></div>
+                        <div style="height:65%; width:32px; background:var(--sap-blue); border-radius: 4px 4px 0 0;"></div>
+                        <div style="height:45%; width:32px; background:var(--sap-blue); border-radius: 4px 4px 0 0;"></div>
                     </div>
-                    <div style="display: flex; justify-content: space-around; font-size: 0.7rem; color: var(--text-light); margin-top: 10px;">
-                        <span>Jakarta</span><span>Surabaya</span><span>Bandung</span><span>Medan</span>
+                    <div style="display:flex; justify-content:space-around; font-size:0.7rem; margin-top:10px; font-weight: 500;">
+                        <span>Jakarta</span><span>Surabaya</span><span>Medan</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- CONTACTS VIEW -->
+        <!-- CONTACTS -->
         <div id="view-contacts" class="view-content active">
-            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
-                <h1>CRM Database</h1>
-                <div style="font-size: 0.8rem; color: var(--text-light);">Matches: <strong id="total-count">100</strong></div>
-            </div>
+            <h1>Customer Contacts & Leads</h1>
             <div class="card">
                 <table>
                     <thead>
-                        <tr><th>Full Name</th><th>Email <span class="pii-tag">PII</span></th><th>NIK/KTP <span class="pii-tag">PII</span></th><th>NPWP <span class="pii-tag">PII</span></th><th>Status</th></tr>
+                        <tr><th>Subject Name</th><th>Email <span class="pii-tag">PII</span></th><th>NIK <span class="pii-tag">PII</span></th><th>NPWP <span class="pii-tag">PII</span></th></tr>
                     </thead>
                     <tbody id="contact-table"></tbody>
                 </table>
@@ -191,193 +184,208 @@
             </div>
         </div>
 
-        <!-- PIPELINE VIEW -->
+        <!-- PIPELINE -->
         <div id="view-pipeline" class="view-content">
-            <h1>Sales Pipeline (Active Deals)</h1>
+            <h1>Active Sales Pipeline</h1>
             <div class="card">
                 <table>
                     <thead>
-                        <tr>
-                            <th>Deal Opportunity</th>
-                            <th>Company</th>
-                            <th>Lead Contact <span class="pii-tag">PII</span></th>
-                            <th>Value (Non-PII)</th>
-                            <th>Stage</th>
-                        </tr>
+                        <tr><th>Opportunity Name</th><th>Lead Contact <span class="pii-tag">PII</span></th><th>Expected Value (Non-PII)</th><th>Stage</th></tr>
                     </thead>
                     <tbody id="pipeline-table"></tbody>
                 </table>
             </div>
         </div>
 
-        <!-- DATA MANAGEMENT VIEW -->
+        <!-- DATA MGMT -->
         <div id="view-datamgmt" class="view-content">
-            <h1>Data Management & Compliance</h1>
-            <p style="color:var(--text-light)">Trigger Chrome Enterprise Premium DLP policies using these functional controls.</p>
+            <h1>Secure Data Management</h1>
             <div class="dashboard-grid">
-                <div class="card" style="text-align: center;">
-                    <h2 style="font-size: 1.2rem;">Bulk Upload</h2>
-                    <p style="font-size: 0.85rem;">Ingest CSV files. Scanned for PII & Malware.</p>
-                    <label class="btn btn-primary" style="display: inline-block;">
-                        📤 UPLOAD DATA
-                        <input type="file" style="display: none;" onchange="mockUpload()">
-                    </label>
-                    <div id="upload-progress" style="margin-top: 15px; font-weight: bold; color: var(--success); display: none;">Scan in Progress...</div>
+                <div class="card" style="text-align:center">
+                    <h3>Database Bulk Export</h3>
+                    <p>Audit dump for all 100 subjects in CRM.</p>
+                    <button class="btn btn-primary" onclick="openDownloadModal()">📥 DOWNLOAD ALL RECORDS</button>
                 </div>
-                <div class="card" style="text-align: center;">
-                    <h2 style="font-size: 1.2rem;">Data Export</h2>
-                    <p style="font-size: 0.85rem;">Download sensitive PII records.</p>
-                    <button class="btn btn-primary" onclick="openDownloadModal()">📥 DOWNLOAD RECORDS</button>
+                <div class="card" style="text-align:center">
+                    <h3>DLP Print Audit</h3>
+                    <p>Trigger print preview scan for PII patterns.</p>
+                    <button class="btn btn-primary" onclick="triggerFullPrint()">🖨️ PRINT FULL DATABASE</button>
                 </div>
-                <div class="card" style="text-align: center;">
-                    <h2 style="font-size: 1.2rem;">Secure Printing</h2>
-                    <p style="font-size: 0.85rem;">Print customer profiles (detected by browser).</p>
-                    <button class="btn btn-primary" onclick="triggerPrint()">🖨️ PRINT DATABASE</button>
+                <div class="card" style="text-align:center">
+                    <h3>Malware & PII Ingestion</h3>
+                    <p>Upload files for cloud content inspection.</p>
+                    <input type="file" id="up" style="display:none" onchange="mockUp()">
+                    <button class="btn btn-outline" onclick="document.getElementById('up').click()">📤 UPLOAD LEAD FILE</button>
                 </div>
             </div>
         </div>
-
-        <div id="view-reports" class="view-content">
-            <h1>Audit Logs</h1>
-            <div class="card">No incidents reported in the last 24 hours. Data fully protected.</div>
-        </div>
     </main>
 
-    <!-- Details Drawer -->
+    <!-- Drawer -->
     <div id="drawer">
-        <h2 id="dr-name">Name</h2>
-        <div style="background: #fff7ed; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
-            <p><strong>NIK:</strong> <span id="dr-nik">---</span></p>
-            <p><strong>NPWP:</strong> <span id="dr-npwp">---</span></p>
+        <h2 id="dr-name" style="margin-top:0;">Subject Name</h2>
+        <div class="pii-panel">
+            <p><strong>NIK (PII):</strong> <span id="dr-nik">---</span></p>
+            <p><strong>NPWP (PII):</strong> <span id="dr-npwp">---</span></p>
         </div>
-        <h3>Known Contacts</h3>
-        <tbody id="dr-subs"></tbody>
-        <div style="margin-top: 30px;">
-            <button class="btn btn-primary" onclick="triggerPrint()">Print Full Profile</button>
+        <div class="section-header">👥 Stakeholders Terkait</div>
+        <table style="font-size:0.8rem">
+            <thead><tr><th>Nama</th><th>Jabatan</th><th>Kontak (PII)</th></tr></thead>
+            <tbody id="dr-subs"></tbody>
+        </table>
+        <div class="section-header">📜 Contact History</div>
+        <table style="font-size:0.8rem">
+            <thead><tr><th>Tanggal</th><th>Metode</th><th>Kegiatan</th></tr></thead>
+            <tbody id="dr-history"></tbody>
+        </table>
+        <div style="margin-top:30px; display:flex; gap:10px;">
+            <button class="btn btn-primary" onclick="triggerSinglePrint()">Cetak Profil</button>
+            <button class="btn btn-outline" onclick="closeDrawer()">Tutup</button>
         </div>
     </div>
 
     <div id="print-area" style="display:none;"></div>
 
     <script>
-        // --- DATA ENGINE ---
         const firstNames = ["Budi", "Siti", "Andi", "Rina", "Dedi", "Agus", "Dewi", "Eko", "Maya", "Hendra"];
         const lastNames = ["Santoso", "Aminah", "Pratama", "Wijaya", "Putri", "Kurniawan", "Lestari", "Hidayat"];
-        const companies = ["Telkom Indonesia", "Pertamina", "Gojek", "Traveloka", "Bank Mandiri", "BCA", "Indofood"];
-        const pipeStages = ["Qualification", "Needs Analysis", "Proposal Sent", "Negotiation", "Legal Review"];
+        const companies = ["Telkom ID", "Pertamina", "Gojek", "Traveloka", "Mandiri", "BCA", "Indofood"];
         
         let indoData = [];
         for (let i = 0; i < 100; i++) {
             const name = firstNames[i % 10] + " " + lastNames[i % 8];
+            const comp = companies[i % 7];
+            
+            let subs = [];
+            for(let j=0; j<3; j++) subs.push({n: firstNames[(i+j)%10]+" "+lastNames[(i+j)%8], j: "Principal Manager", c: "+62 811-"+Math.floor(Math.random()*90000000)});
+            
+            let history = [];
+            for(let k=0; k<5; k++) history.push({d: `2026-0${4-Math.floor(k/2)}-20`, m: "Face to Face Meeting", k: "Account Review"});
+
             indoData.push({
                 name: name,
-                company: companies[i % 7],
-                email: `${name.toLowerCase().replace(" ",".")}@${companies[i%7].toLowerCase().replace(" ","")}.co.id`,
-                nik: "3" + Math.floor(Math.random() * 900000000000000 + 100000000000000),
+                email: `${name.toLowerCase().replace(" ",".")}@${comp.toLowerCase()}.com`,
+                nik: "3" + Math.floor(Math.random()*900000000000000+100000000000000),
                 npwp: "01." + Math.floor(Math.random()*900) + "." + Math.floor(Math.random()*900) + ".0-012.000",
-                value: "Rp " + (Math.floor(Math.random() * 500) + 100) + "M",
-                stage: pipeStages[i % 5]
+                company: comp,
+                value: "Rp " + (Math.floor(Math.random()*500)+50) + "M",
+                stage: "Negotiation",
+                subs: subs,
+                history: history
             });
         }
 
-        // --- AUTH & NAV ---
-        function mockLogin() {
-            document.getElementById('login-overlay').style.opacity = '0';
-            setTimeout(() => { document.getElementById('login-overlay').style.display = 'none'; }, 300);
-        }
-
-        function switchView(viewId) {
-            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('view-' + viewId).classList.add('active');
-            document.getElementById('menu-' + (viewId === 'dashboard' ? 'dash' : (viewId === 'contacts' ? 'contacts' : (viewId === 'pipeline' ? 'pipe' : (viewId === 'datamgmt' ? 'data' : 'reports'))))).classList.add('active');
-            if(viewId === 'contacts') renderTable();
-            if(viewId === 'pipeline') renderPipeline();
-        }
-
-        // --- SEARCH & TABLE ---
         let currentPage = 1;
         let searchTerm = "";
+        let selectedIndex = 0;
 
-        function handleSearch() {
-            searchTerm = document.getElementById('search-input').value.toLowerCase();
-            currentPage = 1;
-            renderTable();
+        function mockLogin() { document.getElementById('login-overlay').style.display = 'none'; }
+        
+        function switchView(v) {
+            document.querySelectorAll('.view-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            document.getElementById('view-'+v).classList.add('active');
+            document.getElementById('menu-'+(v==='dashboard'?'dash':(v==='contacts'?'contacts':(v==='pipeline'?'pipe':'data')))).classList.add('active');
+            if(v==='contacts') renderTable();
+            if(v==='pipeline') renderPipeline();
         }
+
+        function handleSearch() { searchTerm = document.getElementById('search-input').value.toLowerCase(); currentPage = 1; renderTable(); }
 
         function renderTable() {
             const table = document.getElementById('contact-table');
             const filtered = indoData.filter(d => d.name.toLowerCase().includes(searchTerm) || d.nik.includes(searchTerm));
-            document.getElementById('total-count').innerText = filtered.length;
             table.innerHTML = "";
             filtered.slice((currentPage-1)*10, currentPage*10).forEach(d => {
-                table.innerHTML += `<tr onclick="openDrawer(${indoData.indexOf(d)})"><td><strong>${d.name}</strong></td><td>${d.email}</td><td>${d.nik}</td><td>${d.npwp}</td><td><span style="color:var(--success)">Active</span></td></tr>`;
+                const idx = indoData.indexOf(d);
+                table.innerHTML += `<tr onclick="openDrawer(${idx})"><td><strong>${d.name}</strong></td><td>${d.email}</td><td>${d.nik}</td><td>${d.npwp}</td></tr>`;
             });
             renderPagination(filtered.length);
+        }
+
+        function renderPagination(total) {
+            const p = document.getElementById('pagination');
+            p.innerHTML = "";
+            for(let i=1; i<=Math.ceil(total/10); i++) {
+                if(i > 4 && i < Math.ceil(total/10)) continue;
+                p.innerHTML += `<button class="page-btn ${i===currentPage?'active':''}" onclick="currentPage=${i};renderTable();">${i}</button>`;
+            }
         }
 
         function renderPipeline() {
             const table = document.getElementById('pipeline-table');
             table.innerHTML = "";
             indoData.slice(0, 15).forEach(d => {
-                table.innerHTML += `<tr><td><strong>Opportunity ${d.company}</strong></td><td>${d.company}</td><td>${d.email} <span class="pii-tag">PII</span></td><td>${d.value}</td><td><span class="btn btn-outline" style="padding:4px 8px; font-size:0.7rem;">${d.stage}</span></td></tr>`;
+                table.innerHTML += `<tr><td><strong>Corporate License - ${d.company}</strong></td><td>${d.email}</td><td>${d.value}</td><td>${d.stage}</td></tr>`;
             });
         }
 
-        function renderPagination(total) {
-            const pg = document.getElementById('pagination');
-            pg.innerHTML = "";
-            for(let i=1; i<=Math.ceil(total/10); i++) {
-                if(i > 5 && i < Math.ceil(total/10)) continue;
-                pg.innerHTML += `<button class="page-btn ${i===currentPage?'active':''}" onclick="currentPage=${i}; renderTable();">${i}</button>`;
-            }
-        }
-
-        // --- DRAWER ---
         function openDrawer(i) {
+            selectedIndex = i;
             const d = indoData[i];
             document.getElementById('dr-name').innerText = d.name;
             document.getElementById('dr-nik').innerText = d.nik;
             document.getElementById('dr-npwp').innerText = d.npwp;
+            
+            document.getElementById('dr-subs').innerHTML = d.subs.map(s => `<tr><td>${s.n}</td><td>${s.j}</td><td>${s.c}</td></tr>`).join("");
+            document.getElementById('dr-history').innerHTML = d.history.map(h => `<tr><td>${h.d}</td><td>${h.m}</td><td>${h.k}</td></tr>`).join("");
+            
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('drawer').style.right = '0';
         }
-        function closeDrawer() { document.getElementById('drawer').style.right = '-750px'; document.getElementById('overlay').style.display = 'none'; }
 
-        // --- DATA MGMT ACTIONS ---
+        function closeDrawer() { document.getElementById('drawer').style.right = '-750px'; document.getElementById('overlay').style.display = 'none'; }
         function openDownloadModal() { document.getElementById('download-modal').style.display = 'block'; document.getElementById('overlay').style.display = 'block'; }
         function closeDownloadModal() { document.getElementById('download-modal').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; }
 
         function performDownload(type) {
-            const csv = "Name,NIK,NPWP\n" + indoData.slice(0,5).map(d => `${d.name},${d.nik},${d.npwp}`).join("\n");
-            const blob = new Blob([csv], { type: 'text/plain' });
+            const headers = "Name,Email,NIK,NPWP,Company,DealValue,Stage\n";
+            // Pre-formatting with ' to assist Excel in treating as string
+            const rows = indoData.map(d => `"${d.name}","${d.email}","'${d.nik}","${d.npwp}","${d.company}","${d.value}","${d.stage}"`).join("\n");
+            
+            const blob = new Blob([headers + rows], { type: 'text/csv' });
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = `Nexus_PII_Export.${type.toLowerCase()}`;
+            a.download = `BukanBankIndo_Full_Dump_${new Date().getTime()}.${type.toLowerCase()}`;
             a.click();
             closeDownloadModal();
         }
 
-        function mockUpload() {
-            document.getElementById('upload-progress').style.display = 'block';
-            setTimeout(() => { document.getElementById('upload-progress').innerText = "File Uploaded & Audited."; }, 1500);
-        }
+        function triggerFullPrint() {
+            let tableHtml = `<table border="1" style="width:100%; border-collapse:collapse; margin-top:20px;">
+                <thead><tr><th>Subject Name</th><th>NIK Pattern (PII)</th><th>NPWP Pattern (PII)</th></tr></thead><tbody>`;
+            indoData.forEach(d => {
+                tableHtml += `<tr><td>${d.name}</td><td>${d.nik}</td><td>${d.npwp}</td></tr>`;
+            });
+            tableHtml += `</tbody></table>`;
 
-        function triggerPrint() {
-            // Include NIK/NPWP for Chrome DLP engine to "see" and block
             document.getElementById('print-area').innerHTML = `
-                <div style="padding:50px;">
-                    <h1>INTERNAL SECURITY EXPORT</h1>
-                    <p>Protected by UU PDP. SSN/NIK Patterns detected.</p>
-                    <table border="1" style="width:100%; border-collapse:collapse;">
-                        <tr><td>NIK: 3275010106850001</td></tr>
-                        <tr><td>NPWP: 01.234.567.8-012.000</td></tr>
-                        <tr><td>Account: ${document.getElementById('dr-name').innerText || "Global Database"}</td></tr>
-                    </table>
+                <div style="padding:40px;">
+                    <h1 style="border-bottom: 2px solid #333; padding-bottom: 10px;">BUKANBANKINDONESIA - SECURE AUDIT REPORT</h1>
+                    <p>Internal Only. This document contains 100 sensitive NIK and NPWP records as defined by UU PDP.</p>
+                    ${tableHtml}
+                    <div style="margin-top: 40px; padding: 20px; border: 2px dashed red; text-align: center;">
+                        <h2 style="color:red; margin:0;">BROWSER-LEVEL DATA LOSS PREVENTION ACTIVE</h2>
+                    </div>
                 </div>`;
             window.print();
         }
+
+        function triggerSinglePrint() {
+            const d = indoData[selectedIndex];
+            document.getElementById('print-area').innerHTML = `
+                <div style="padding:50px;">
+                    <h1>SUBJECT RECORD: ${d.name}</h1>
+                    <p>NIK: ${d.nik}</p><p>NPWP: ${d.npwp}</p>
+                    <hr>
+                    <h3>MANAGED STAKEHOLDERS</h3>
+                    ${document.getElementById('dr-subs').parentElement.outerHTML}
+                </div>`;
+            window.print();
+        }
+
+        function mockUp() { alert("BukanBankIndonesia Security: File scanned. No threats detected."); }
 
         renderTable();
     </script>
