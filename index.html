@@ -3,159 +3,441 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus CRM | Enterprise Customer Success</title>
+    <title>Nexus CRM Indonesia | Enterprise Data Platform (UU PDP Compliant)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
-        :root { --hubspot-orange: #ff7a59; --sap-blue: #008fd3; --bg: #f5f8fa; --text: #33475b; }
-        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; }
-        
-        /* Sidebar Navigation */
-        nav { width: 220px; background: #2d3e50; color: white; padding: 20px; display: flex; flex-direction: column; }
-        nav h2 { font-size: 1.2rem; margin-bottom: 30px; letter-spacing: 1px; }
-        .nav-item { padding: 12px; cursor: pointer; opacity: 0.8; transition: 0.3s; border-radius: 4px; }
-        .nav-item:hover { background: rgba(255,255,255,0.1); opacity: 1; }
-        .active { background: var(--hubspot-orange); opacity: 1; }
-
-        /* Main Content */
-        main { flex-grow: 1; overflow-y: auto; padding: 30px; position: relative; }
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .search-bar { width: 300px; padding: 10px; border: 1px solid #cbd6e2; border-radius: 5px; }
-
-        /* Customer Table */
-        .card { background: white; border: 1px solid #eaf0f6; border-radius: 8px; box-shadow: 0 4px 12px rgba(82,95,127,.04); }
-        table { width: 100%; border-collapse: collapse; }
-        th { background: #f5f8fa; text-align: left; padding: 15px; font-size: 0.85rem; color: #516f90; text-transform: uppercase; }
-        td { padding: 15px; border-top: 1px solid #eaf0f6; cursor: pointer; }
-        tr:hover { background: #f9fbff; }
-
-        /* Details Slide-out Panel */
-        #detail-panel { 
-            position: fixed; right: -500px; top: 0; width: 450px; height: 100%; 
-            background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.1); 
-            transition: 0.4s; padding: 30px; overflow-y: auto; z-index: 100;
+        :root {
+            --primary: #1e293b;
+            --accent: #ff7a59;
+            --sap-blue: #008fd3;
+            --success: #10b981;
+            --bg-light: #f8fafc;
+            --border: #e2e8f0;
+            --text-main: #33475b;
+            --text-light: #64748b;
         }
-        .close-btn { cursor: pointer; float: right; font-size: 1.5rem; color: #cbd6e2; }
-        .detail-section { margin-top: 25px; padding-top: 15px; border-top: 1px solid #eee; }
-        .pii-box { background: #fff5f2; border-left: 4px solid var(--hubspot-orange); padding: 10px; margin: 10px 0; }
 
-        /* Buttons */
-        .btn-group { margin-top: 20px; }
-        .btn { padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
-        .btn-print { background: #00a4bd; color: white; }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Sidebar Navigation */
+        nav {
+            width: 260px;
+            background-color: var(--primary);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .logo-section {
+            padding: 25px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .nav-links { padding: 20px 12px; flex-grow: 1; }
+
+        .nav-item {
+            padding: 12px 16px;
+            margin-bottom: 4px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .nav-item:hover { background: rgba(255,255,255,0.1); color: white; }
+        .nav-item.active { background: var(--accent); color: white; font-weight: 500; }
+
+        /* Main Area */
+        main { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
+
+        header {
+            background: white;
+            padding: 0 40px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 70px;
+        }
+
+        .search-container input {
+            width: 350px;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            background: #f1f5f9;
+        }
+
+        .view-content { padding: 30px 40px; overflow-y: auto; flex-grow: 1; display: none; }
+        .view-content.active { display: block; }
+
+        /* Component Styles */
+        .card { background: white; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); padding: 20px; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px 15px; font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
+        tr:hover td { background: #f8fafc; cursor: pointer; }
+
+        /* Drawer */
+        #drawer {
+            position: fixed; top: 0; right: -750px; width: 700px; height: 100%;
+            background: white; box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+            z-index: 1001; transition: 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99);
+            display: flex; flex-direction: column;
+        }
+        .drawer-header { padding: 25px 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+        .drawer-body { padding: 30px; overflow-y: auto; flex-grow: 1; }
+        
+        .pii-panel { background: #fff7ed; border: 1px solid #ffedd5; padding: 20px; border-radius: 8px; margin-bottom: 25px; }
+        .pii-row { display: flex; margin-bottom: 10px; font-size: 0.9rem; }
+        .pii-label { width: 180px; color: var(--text-light); font-weight: 500; }
+        .pii-value { font-weight: 600; color: #c2410c; }
+
+        .section-header { border-bottom: 2px solid var(--border); padding-bottom: 8px; margin: 30px 0 15px 0; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+
+        #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; z-index: 1000; }
+
+        .btn { padding: 10px 20px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
+        .btn-primary { background: var(--sap-blue); color: white; }
+        .btn-outline { background: white; border: 1px solid var(--border); color: var(--text-main); }
+
+        /* Pagination Styles */
+        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 20px; padding: 20px; }
+        .page-btn { padding: 8px 12px; border: 1px solid var(--border); border-radius: 4px; background: white; cursor: pointer; }
+        .page-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+        .history-tag { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
+        .tag-call { background: #dbeafe; color: #1e40af; }
+        .tag-visit { background: #dcfce7; color: #166534; }
+        .tag-email { background: #fef3c7; color: #92400e; }
+
+        @media print {
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { position: absolute; left: 0; top: 0; width: 100%; }
+        }
     </style>
 </head>
 <body>
 
+    <div id="overlay" onclick="closeDrawer()"></div>
+
     <nav>
-        <h2>NEXUS CRM</h2>
-        <div class="nav-item active">Contacts</div>
-        <div class="nav-item">Companies</div>
-        <div class="nav-item">Deals</div>
-        <div class="nav-item" style="margin-top:auto">Settings</div>
+        <div class="logo-section">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+            NEXUS INDONESIA
+        </div>
+        <div class="nav-links">
+            <div class="nav-item" id="menu-dash" onclick="switchView('dashboard')">🏠 Dashboard</div>
+            <div class="nav-item active" id="menu-contacts" onclick="switchView('contacts')">👥 Contacts & Leads</div>
+            <div class="nav-item" id="menu-pipe" onclick="switchView('pipeline')">📈 Sales Pipelines</div>
+            <div class="nav-item" id="menu-auto" onclick="switchView('automation')">🤖 Automation</div>
+            <div class="nav-item" id="menu-reports" onclick="switchView('reports')">📑 Cloud Reports</div>
+        </div>
+        <div style="padding: 20px; font-size: 0.7rem; opacity: 0.4;">
+            Audit-Ready: UU PDP No. 27/2022
+        </div>
     </nav>
 
     <main>
-        <div class="header">
-            <h1>All Contacts</h1>
-            <input type="text" class="search-bar" placeholder="Search contacts...">
+        <header>
+            <div class="search-container"><input type="text" placeholder="Cari NIK, Nama, atau NPWP..."></div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="font-size: 0.85rem; color: var(--text-light);">Wilayah: <strong>DKI Jakarta</strong></span>
+                <div style="width: 35px; height: 35px; border-radius: 50%; background: #e2e8f0; border: 2px solid var(--accent);"></div>
+            </div>
+        </header>
+
+        <!-- DASHBOARD VIEW -->
+        <div id="view-dashboard" class="view-content">
+            <h1>Ringkasan Eksekutif</h1>
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px;">
+                <div class="card" style="padding:20px;">
+                    <div style="color:var(--text-light); font-size: 0.75rem;">Revenue Q2 (Est)</div>
+                    <div style="font-size:1.5rem; font-weight:700;">Rp 48.2B</div>
+                </div>
+                <div class="card" style="padding:20px;">
+                    <div style="color:var(--text-light); font-size: 0.75rem;">Total Subjek Data</div>
+                    <div style="font-size:1.5rem; font-weight:700;">100 Accounts</div>
+                </div>
+                <div class="card" style="padding:20px;">
+                    <div style="color:var(--text-light); font-size: 0.75rem;">PII Diteksi (Chrome)</div>
+                    <div style="font-size:1.5rem; font-weight:700;">3,421 Fields</div>
+                </div>
+                <div class="card" style="padding:20px;">
+                    <div style="color:var(--text-light); font-size: 0.75rem;">Health Score</div>
+                    <div style="font-size:1.5rem; font-weight:700; color:var(--success)">98%</div>
+                </div>
+            </div>
+            <div class="card">
+                <h3>Log Akses Terakhir</h3>
+                <p style="color:var(--text-light); font-size: 0.9rem;">Sistem mendeteksi 100% enkripsi data pada level browser via Chrome Enterprise Premium.</p>
+            </div>
         </div>
 
-        <div class="card">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Contact Name</th>
-                        <th>Email Address (PII)</th>
-                        <th>Tax ID (PII)</th>
-                        <th>Lead Status</th>
-                    </tr>
-                </thead>
-                <tbody id="customer-list">
-                    </tbody>
-            </table>
+        <!-- CONTACTS VIEW -->
+        <div id="view-contacts" class="view-content active">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
+                <div>
+                    <h1 style="margin: 0;">Kontak & Prospek Strategis</h1>
+                    <p style="color: var(--text-light); margin: 5px 0 0 0;">Menampilkan entitas bisnis dengan proteksi data pribadi tingkat tinggi.</p>
+                </div>
+                <div style="font-size: 0.8rem; color: var(--text-light);">Total: <strong id="total-count">100</strong> Data</div>
+            </div>
+            <div class="card">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nama Lengkap</th>
+                            <th>Email (PII)</th>
+                            <th>NIK / KTP (PII)</th>
+                            <th>NPWP (PII)</th>
+                            <th>Status Akun</th>
+                        </tr>
+                    </thead>
+                    <tbody id="contact-table"></tbody>
+                </table>
+                <div class="pagination" id="pagination"></div>
+            </div>
+        </div>
+
+        <!-- OTHER VIEWS (Placeholders) -->
+        <div id="view-pipeline" class="view-content"><h1>Pipeline Penjualan</h1><div class="card">Modul Pipeline sedang memproses 42 deals aktif.</div></div>
+        <div id="view-automation" class="view-content"><h1>Otomatisasi</h1><div class="card">Workflows aktif: 12. Policy: Privacy First.</div></div>
+        <div id="view-reports" class="view-content">
+            <h1>Laporan Cloud</h1>
+            <div class="card">
+                <p>Ekspor laporan kepatuhan UU PDP untuk audit internal.</p>
+                <button class="btn btn-outline" onclick="triggerPrint()">📥 Download PDF Audit (Scanned by Chrome)</button>
+            </div>
         </div>
     </main>
 
-    <div id="detail-panel">
-        <span class="close-btn" onclick="closePanel()">×</span>
-        <h2 id="det-name">Customer Name</h2>
-        <div class="pii-box">
-            <strong>Internal Account ID:</strong> <span id="det-id">---</span><br>
-            <strong>Private SSN/Tax ID:</strong> <span id="det-ssn">---</span>
+    <!-- Details Drawer -->
+    <div id="drawer">
+        <div class="drawer-header">
+            <div>
+                <h2 id="dr-name" style="margin:0;">Nama Lengkap</h2>
+                <span id="dr-loc" style="color:var(--text-light); font-size: 0.85rem;">Lokasi</span>
+            </div>
+            <span style="cursor:pointer; font-size: 28px; color: var(--text-light);" onclick="closeDrawer()">&times;</span>
         </div>
+        <div class="drawer-body">
+            <div class="pii-panel">
+                <div class="pii-row"><span class="pii-label">NIK (No. KTP)</span><span class="pii-value" id="dr-nik">---</span></div>
+                <div class="pii-row"><span class="pii-label">No. NPWP</span><span class="pii-value" id="dr-npwp">---</span></div>
+                <div class="pii-row"><span class="pii-label">Alamat Sesuai KTP</span><span class="pii-value" id="dr-addr">---</span></div>
+            </div>
 
-        <div class="detail-section">
-            <h3>Known Contacts</h3>
+            <div class="section-header">👥 Stakeholder Terkait (Min. 3)</div>
             <table style="font-size: 0.85rem;">
-                <thead>
-                    <tr><th>Name</th><th>Position</th><th>Phone/Email</th></tr>
-                </thead>
-                <tbody id="det-contacts">
-                    </tbody>
+                <thead><tr><th>Nama</th><th>Jabatan</th><th>Kontak (PII)</th></tr></thead>
+                <tbody id="dr-subs"></tbody>
+            </table>
+
+            <div class="section-header">📜 Contact History (Riwayat Interaksi)</div>
+            <table style="font-size: 0.85rem;">
+                <thead><tr><th>Tanggal</th><th>Metode</th><th>Kegiatan</th><th>Hasil</th></tr></thead>
+                <tbody id="dr-history"></tbody>
             </table>
         </div>
-
-        <div class="btn-group">
-            <button class="btn btn-print" onclick="triggerPrint()">🖨️ Export Record to PDF</button>
+        <div class="drawer-footer" style="padding: 20px 30px; border-top: 1px solid var(--border); background: #f8fafc; text-align: right;">
+            <button class="btn btn-outline" onclick="closeDrawer()">Tutup</button>
+            <button class="btn btn-primary" style="margin-left: 10px;" onclick="triggerPrint()">🖨️ Cetak Profil (DLP Audit)</button>
         </div>
     </div>
 
+    <div id="print-area" style="display:none;"></div>
+
     <script>
-        const customers = [
-            { name: "John Doe", email: "j.doe@globalcorp.com", tax: "450-11-2233", status: "Active", 
-              contacts: [
-                { n: "Sarah Miller", p: "CFO", c: "+1-555-0102 / s.miller@global.com" },
-                { n: "Kevin Hart", p: "Procurement", c: "+1-555-9981 / k.hart@global.com" }
-              ] 
-            },
-            { name: "Jane Smith", email: "jane.s@startup.io", tax: "123-45-6789", status: "In Progress", 
-              contacts: [
-                { n: "Mike Ross", p: "CEO", c: "+1-202-555-0111 / ross@startup.io" }
-              ] 
-            }
-        ];
+        // --- DATA GENERATOR FOR 100 RECORDS ---
+        const firstNames = ["Budi", "Siti", "Andi", "Rina", "Dedi", "Agus", "Dewi", "Eko", "Maya", "Hendra", "Lia", "Doni", "Ratna", "Fajar", "Ika", "Taufik", "Sari", "Dimas", "Anita", "Rian"];
+        const lastNames = ["Santoso", "Aminah", "Pratama", "Wijaya", "Putri", "Kurniawan", "Lestari", "Hidayat", "Sari", "Gunawan", "Setiawan", "Utami", "Nugroho", "Saputra", "Wulandari"];
+        const companies = ["Telkom Indonesia", "Pertamina", "Gojek", "Traveloka", "Bank Mandiri", "BCA", "Indofood", "Unilever ID", "Bukalapak", "Tokopedia", "Grab ID", "Astra Intl", "PLN", "Bio Farma", "Adaro"];
+        const cities = ["Jakarta Selatan", "Surabaya", "Bandung", "Medan", "Semarang", "Makassar", "Palembang", "Tangerang", "Bekasi", "Depok"];
+        const roles = ["CEO", "CFO", "Director of IT", "Legal Head", "VP Sales", "Procurement Manager", "HR Director", "Account Manager"];
+        const methods = ["Call In", "Face to Face Meeting", "Video Conference", "WhatsApp Business", "Email Thread"];
+        const activities = ["Diskusi Roadmap Q3", "Negosiasi Kontrak", "Technical Workshop", "Kunjungan Site Visit", "Follow-up Invoice", "Presentasi Produk", "Review UU PDP"];
+        const results = ["Deal Closed", "Follow-up Scheduled", "Draft Sent", "Pending Approval", "On Hold", "Success", "Contract Signed"];
 
-        function init() {
-            const tbody = document.getElementById('customer-list');
-            customers.forEach((c, index) => {
-                const row = `
-                    <tr onclick="openPanel(${index})">
-                        <td><strong>${c.name}</strong></td>
-                        <td>${c.email}</td>
-                        <td>${c.tax}</td>
-                        <td><span style="color:green">${c.status}</span></td>
-                    </tr>`;
-                tbody.innerHTML += row;
-            });
-        }
-
-        function openPanel(index) {
-            const c = customers[index];
-            document.getElementById('det-name').innerText = c.name;
-            document.getElementById('det-id').innerText = "ACC-2026-" + (index + 100);
-            document.getElementById('det-ssn').innerText = c.tax;
+        let indoData = [];
+        for (let i = 0; i < 100; i++) {
+            const fName = firstNames[i % firstNames.length];
+            const lName = lastNames[(i + 3) % lastNames.length];
+            const fullName = fName + " " + lName;
+            const company = companies[i % companies.length];
             
-            let contactHtml = "";
-            c.contacts.forEach(con => {
-                contactHtml += `<tr><td>${con.n}</td><td>${con.p}</td><td>${con.c}</td></tr>`;
+            // Generate Realistic ID Numbers
+            const nik = "3" + Math.floor(Math.random() * 900000000000000 + 100000000000000);
+            const npwp = "0" + Math.floor(Math.random() * 9) + "." + Math.floor(Math.random() * 999) + "." + Math.floor(Math.random() * 999) + "." + Math.floor(Math.random() * 9) + "-0" + Math.floor(Math.random() * 99) + ".000";
+
+            // Generate 3 Stakeholders
+            let subs = [];
+            for (let j = 0; j < 3; j++) {
+                const subFName = firstNames[(i + j + 5) % firstNames.length];
+                const subLName = lastNames[(i + j + 8) % lastNames.length];
+                subs.push({
+                    n: subFName + " " + subLName,
+                    j: roles[(i + j) % roles.length],
+                    c: `+62 8${Math.floor(Math.random() * 999999999)} / ${subFName.toLowerCase()}@${company.toLowerCase().replace(" ", "")}.co.id`
+                });
+            }
+
+            // Generate 5 History Items
+            let history = [];
+            for (let k = 0; k < 5; k++) {
+                history.push({
+                    t: `2026-0${4 - Math.floor(k/2)}-${10 + (k*2)}`,
+                    m: methods[k % methods.length],
+                    k: activities[(i + k) % activities.length],
+                    r: results[(i + k) % results.length]
+                });
+            }
+
+            indoData.push({
+                name: fullName,
+                email: `${fName.toLowerCase()}.${lName.toLowerCase()}@${company.toLowerCase().replace(" ", "")}.com`,
+                nik: nik,
+                npwp: npwp,
+                loc: cities[i % cities.length],
+                addr: `Jl. Melati No. ${i+1}, Cluster ${company}`,
+                subs: subs,
+                history: history
             });
-            document.getElementById('det-contacts').innerHTML = contactHtml;
-            document.getElementById('detail-panel').style.right = "0";
         }
 
-        function closePanel() {
-            document.getElementById('detail-panel').style.right = "-500px";
+        // --- APP LOGIC ---
+        let currentPage = 1;
+        const rowsPerPage = 10;
+
+        function switchView(view) {
+            document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            document.getElementById('view-' + view).classList.add('active');
+            document.getElementById('menu-' + (view === 'dashboard' ? 'dash' : (view === 'contacts' ? 'contacts' : (view === 'pipeline' ? 'pipe' : (view === 'automation' ? 'auto' : 'reports'))))).classList.add('active');
+        }
+
+        function renderTable() {
+            const table = document.getElementById('contact-table');
+            table.innerHTML = "";
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageData = indoData.slice(start, end);
+
+            pageData.forEach((d, index) => {
+                const globalIndex = start + index;
+                const tr = document.createElement('tr');
+                tr.onclick = () => openDrawer(globalIndex);
+                tr.innerHTML = `
+                    <td><strong>${d.name}</strong></td>
+                    <td>${d.email}</td>
+                    <td>${d.nik}</td>
+                    <td>${d.npwp}</td>
+                    <td><span style="color:var(--success)">● Verified</span></td>
+                `;
+                table.appendChild(tr);
+            });
+            renderPagination();
+        }
+
+        function renderPagination() {
+            const container = document.getElementById('pagination');
+            container.innerHTML = "";
+            const totalPages = Math.ceil(indoData.length / rowsPerPage);
+
+            // Show first, current, and last pages for brevity
+            const pagesToShow = [1, currentPage, totalPages];
+            const uniquePages = [...new Set(pagesToShow)].sort((a,b) => a-b);
+
+            uniquePages.forEach(p => {
+                const btn = document.createElement('button');
+                btn.className = `page-btn ${p === currentPage ? 'active' : ''}`;
+                btn.innerText = p;
+                btn.onclick = () => { currentPage = p; renderTable(); };
+                container.appendChild(btn);
+            });
+        }
+
+        function openDrawer(i) {
+            const d = indoData[i];
+            document.getElementById('dr-name').innerText = d.name;
+            document.getElementById('dr-loc').innerText = d.loc + " | " + d.addr;
+            document.getElementById('dr-nik').innerText = d.nik;
+            document.getElementById('dr-npwp').innerText = d.npwp;
+            document.getElementById('dr-addr').innerText = d.addr;
+
+            // Render Subs
+            let subHtml = "";
+            d.subs.forEach(s => subHtml += `<tr><td>${s.n}</td><td>${s.j}</td><td style="color:var(--sap-blue)">${s.c}</td></tr>`);
+            document.getElementById('dr-subs').innerHTML = subHtml;
+
+            // Render History
+            let histHtml = "";
+            d.history.forEach(h => {
+                const methodClass = h.m.includes("Call") ? "tag-call" : (h.m.includes("Face") ? "tag-visit" : "tag-email");
+                histHtml += `
+                    <tr>
+                        <td style="white-space:nowrap">${h.t}</td>
+                        <td><span class="history-tag ${methodClass}">${h.m}</span></td>
+                        <td style="font-weight:500">${h.k}</td>
+                        <td style="color:var(--success)">${h.r}</td>
+                    </tr>`;
+            });
+            document.getElementById('dr-history').innerHTML = histHtml;
+
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('drawer').style.right = '0';
+        }
+
+        function closeDrawer() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('drawer').style.right = '-750px';
         }
 
         function triggerPrint() {
-            // Injects hidden PII for the DLP print scanner
-            const printArea = document.createElement('div');
-            printArea.style.display = 'none';
-            printArea.innerHTML = `<h1>REDACTED REPORT</h1><p>SSN Found: 450-11-2233, 123-45-6789</p>`;
-            document.body.appendChild(printArea);
+            const d = { name: document.getElementById('dr-name').innerText, nik: document.getElementById('dr-nik').innerText };
+            const content = `
+                <div style="padding:40px; font-family:sans-serif; color:#1a1a1a;">
+                    <div style="text-align:right; color:#666; font-size:12px;">NEXUS CRM SECURE EXPORT</div>
+                    <h1 style="color:#1e293b; border-bottom:4px solid #ff7a59; padding-bottom:10px;">PROFIL SUBJEK DATA PRIBADI</h1>
+                    <p>Klasifikasi: <strong>SANGAT RAHASIA (UU PDP No. 27/2022)</strong></p>
+                    <table border="1" cellpadding="10" style="width:100%; border-collapse:collapse; margin-top:20px;">
+                        <tr><td width="30%">Nama Lengkap</td><td>${d.name || "Global List"}</td></tr>
+                        <tr><td>NIK / No. KTP</td><td>${d.nik || "TERDETEKSI: 3275010106850001"}</td></tr>
+                        <tr><td>NPWP</td><td>${document.getElementById('dr-npwp').innerText || "TERDETEKSI"}</td></tr>
+                    </table>
+                    <div style="margin-top:40px; padding:20px; border:2px dashed red; background:#fff5f5; text-align:center;">
+                        <h2 style="color:red; margin:0;">DLP BLOCK TRIGGERED</h2>
+                        <p style="margin:5px 0 0 0;">Chrome Enterprise detected ID-NIK and ID-NPWP patterns in this print job.</p>
+                    </div>
+                    <p style="font-size:10px; color:#999; margin-top:50px;">Audit ID: NX-${Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
+                </div>
+            `;
+            document.getElementById('print-area').innerHTML = content;
             window.print();
         }
 
-        init();
+        renderTable();
     </script>
 </body>
 </html>
