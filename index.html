@@ -3,103 +3,159 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus CRM - Enterprise Portal</title>
+    <title>Nexus CRM | Enterprise Customer Success</title>
     <style>
-        :root { --primary: #1a73e8; --dark: #202124; --bg: #f8f9fa; }
-        body { font-family: 'Roboto', sans-serif; background: var(--bg); margin: 0; display: flex; height: 100vh; }
-        /* Sidebar */
-        nav { width: 240px; background: white; border-right: 1px solid #ddd; display: none; flex-direction: column; padding: 20px; }
-        nav h2 { color: var(--primary); font-size: 1.2rem; }
-        .nav-item { padding: 12px; cursor: pointer; color: #5f6368; border-radius: 4px; margin-bottom: 5px; }
-        .nav-item:hover { background: #f1f3f4; color: var(--primary); }
+        :root { --hubspot-orange: #ff7a59; --sap-blue: #008fd3; --bg: #f5f8fa; --text: #33475b; }
+        body { font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); margin: 0; display: flex; height: 100vh; }
+        
+        /* Sidebar Navigation */
+        nav { width: 220px; background: #2d3e50; color: white; padding: 20px; display: flex; flex-direction: column; }
+        nav h2 { font-size: 1.2rem; margin-bottom: 30px; letter-spacing: 1px; }
+        .nav-item { padding: 12px; cursor: pointer; opacity: 0.8; transition: 0.3s; border-radius: 4px; }
+        .nav-item:hover { background: rgba(255,255,255,0.1); opacity: 1; }
+        .active { background: var(--hubspot-orange); opacity: 1; }
+
         /* Main Content */
-        main { flex-grow: 1; padding: 40px; overflow-y: auto; }
-        .card { background: white; padding: 25px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { text-align: left; padding: 15px; border-bottom: 1px solid #eee; }
-        th { color: #5f6368; text-transform: uppercase; font-size: 0.8rem; }
+        main { flex-grow: 1; overflow-y: auto; padding: 30px; position: relative; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .search-bar { width: 300px; padding: 10px; border: 1px solid #cbd6e2; border-radius: 5px; }
+
+        /* Customer Table */
+        .card { background: white; border: 1px solid #eaf0f6; border-radius: 8px; box-shadow: 0 4px 12px rgba(82,95,127,.04); }
+        table { width: 100%; border-collapse: collapse; }
+        th { background: #f5f8fa; text-align: left; padding: 15px; font-size: 0.85rem; color: #516f90; text-transform: uppercase; }
+        td { padding: 15px; border-top: 1px solid #eaf0f6; cursor: pointer; }
+        tr:hover { background: #f9fbff; }
+
+        /* Details Slide-out Panel */
+        #detail-panel { 
+            position: fixed; right: -500px; top: 0; width: 450px; height: 100%; 
+            background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.1); 
+            transition: 0.4s; padding: 30px; overflow-y: auto; z-index: 100;
+        }
+        .close-btn { cursor: pointer; float: right; font-size: 1.5rem; color: #cbd6e2; }
+        .detail-section { margin-top: 25px; padding-top: 15px; border-top: 1px solid #eee; }
+        .pii-box { background: #fff5f2; border-left: 4px solid var(--hubspot-orange); padding: 10px; margin: 10px 0; }
+
         /* Buttons */
-        .btn { padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; font-weight: 500; margin-right: 10px; }
-        .btn-primary { background: var(--primary); color: white; }
-        .btn-outline { border: 1px solid #dadce0; background: white; color: #3c4043; }
-        /* Login Page */
-        #login-page { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: #e8f0fe; }
+        .btn-group { margin-top: 20px; }
+        .btn { padding: 10px 15px; border-radius: 5px; border: none; cursor: pointer; font-weight: 600; font-size: 0.9rem; }
+        .btn-print { background: #00a4bd; color: white; }
     </style>
 </head>
 <body>
 
-    <nav id="sidebar">
-        <h2>Nexus CRM</h2>
-        <div class="nav-item" onclick="showPage('home')">🏠 Dashboard</div>
-        <div class="nav-item" onclick="showPage('export')">📊 Data & Exports</div>
-        <div class="nav-item" style="margin-top: auto; color: #d93025;">Log Out</div>
+    <nav>
+        <h2>NEXUS CRM</h2>
+        <div class="nav-item active">Contacts</div>
+        <div class="nav-item">Companies</div>
+        <div class="nav-item">Deals</div>
+        <div class="nav-item" style="margin-top:auto">Settings</div>
     </nav>
 
-    <main id="content-area">
-        <div id="login-page">
-            <div class="card" style="width: 350px; text-align: center;">
-                <img src="https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" width="90" alt="logo">
-                <h3>Sign In</h3>
-                <input type="text" placeholder="Username" style="width: 90%; padding: 10px; margin-bottom: 15px;">
-                <button class="btn btn-primary" onclick="login()">Access System</button>
-            </div>
+    <main>
+        <div class="header">
+            <h1>All Contacts</h1>
+            <input type="text" class="search-bar" placeholder="Search contacts...">
         </div>
 
-        <div id="home-page" style="display: none;">
-            <h1>Customer Overview</h1>
-            <div class="card">
-                <table>
-                    <thead><tr><th>Name</th><th>Account Number</th><th>SSN (PII)</th><th>Status</th></tr></thead>
-                    <tbody>
-                        <tr><td>Global Tech Inc</td><td>ACCT-9908</td><td>450-11-2233</td><td>Active</td></tr>
-                        <tr><td>Starlight Retail</td><td>ACCT-4412</td><td>123-45-6789</td><td>Pending</td></tr>
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Contact Name</th>
+                        <th>Email Address (PII)</th>
+                        <th>Tax ID (PII)</th>
+                        <th>Lead Status</th>
+                    </tr>
+                </thead>
+                <tbody id="customer-list">
                     </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div id="export-page" style="display: none;">
-            <h1>Advanced Controls</h1>
-            <p>Exporting data triggers enterprise DLP scanning policies.</p>
-            <div class="card" style="display: flex; gap: 20px;">
-                <button class="btn btn-outline" onclick="triggerDownload()">📥 Download CSV</button>
-                <button class="btn btn-outline" onclick="triggerPrint()">🖨️ Print Records</button>
-                <label class="btn btn-primary" style="display: inline-block;">
-                    📤 Upload Reports <input type="file" style="display: none;" onchange="triggerUpload()">
-                </label>
-            </div>
-            <div id="status-msg" style="margin-top: 20px; font-weight: bold; color: var(--primary);"></div>
+            </table>
         </div>
     </main>
 
+    <div id="detail-panel">
+        <span class="close-btn" onclick="closePanel()">×</span>
+        <h2 id="det-name">Customer Name</h2>
+        <div class="pii-box">
+            <strong>Internal Account ID:</strong> <span id="det-id">---</span><br>
+            <strong>Private SSN/Tax ID:</strong> <span id="det-ssn">---</span>
+        </div>
+
+        <div class="detail-section">
+            <h3>Known Contacts</h3>
+            <table style="font-size: 0.85rem;">
+                <thead>
+                    <tr><th>Name</th><th>Position</th><th>Phone/Email</th></tr>
+                </thead>
+                <tbody id="det-contacts">
+                    </tbody>
+            </table>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-print" onclick="triggerPrint()">🖨️ Export Record to PDF</button>
+        </div>
+    </div>
+
     <script>
-        function login() {
-            document.getElementById('login-page').style.display = 'none';
-            document.getElementById('sidebar').style.display = 'flex';
-            document.getElementById('home-page').style.display = 'block';
+        const customers = [
+            { name: "John Doe", email: "j.doe@globalcorp.com", tax: "450-11-2233", status: "Active", 
+              contacts: [
+                { n: "Sarah Miller", p: "CFO", c: "+1-555-0102 / s.miller@global.com" },
+                { n: "Kevin Hart", p: "Procurement", c: "+1-555-9981 / k.hart@global.com" }
+              ] 
+            },
+            { name: "Jane Smith", email: "jane.s@startup.io", tax: "123-45-6789", status: "In Progress", 
+              contacts: [
+                { n: "Mike Ross", p: "CEO", c: "+1-202-555-0111 / ross@startup.io" }
+              ] 
+            }
+        ];
+
+        function init() {
+            const tbody = document.getElementById('customer-list');
+            customers.forEach((c, index) => {
+                const row = `
+                    <tr onclick="openPanel(${index})">
+                        <td><strong>${c.name}</strong></td>
+                        <td>${c.email}</td>
+                        <td>${c.tax}</td>
+                        <td><span style="color:green">${c.status}</span></td>
+                    </tr>`;
+                tbody.innerHTML += row;
+            });
         }
 
-        function showPage(pageId) {
-            document.getElementById('home-page').style.display = (pageId === 'home') ? 'block' : 'none';
-            document.getElementById('export-page').style.display = (pageId === 'export') ? 'block' : 'none';
+        function openPanel(index) {
+            const c = customers[index];
+            document.getElementById('det-name').innerText = c.name;
+            document.getElementById('det-id').innerText = "ACC-2026-" + (index + 100);
+            document.getElementById('det-ssn').innerText = c.tax;
+            
+            let contactHtml = "";
+            c.contacts.forEach(con => {
+                contactHtml += `<tr><td>${con.n}</td><td>${con.p}</td><td>${con.c}</td></tr>`;
+            });
+            document.getElementById('det-contacts').innerHTML = contactHtml;
+            document.getElementById('detail-panel').style.right = "0";
         }
 
-        function triggerDownload() {
-            const data = "Customer,SSN\nGlobal Tech,450-11-2233\nStarlight Retail,123-45-6789";
-            const blob = new Blob([data], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.setAttribute('href', url);
-            a.setAttribute('download', 'Sensitive_Customers.csv');
-            a.click();
+        function closePanel() {
+            document.getElementById('detail-panel').style.right = "-500px";
         }
 
-        function triggerPrint() { window.print(); }
-
-        function triggerUpload() {
-            document.getElementById('status-msg').innerText = "Analyzing file for sensitive patterns...";
-            setTimeout(() => { document.getElementById('status-msg').innerText = "Upload Complete (Audited by Chrome)"; }, 2000);
+        function triggerPrint() {
+            // Injects hidden PII for the DLP print scanner
+            const printArea = document.createElement('div');
+            printArea.style.display = 'none';
+            printArea.innerHTML = `<h1>REDACTED REPORT</h1><p>SSN Found: 450-11-2233, 123-45-6789</p>`;
+            document.body.appendChild(printArea);
+            window.print();
         }
+
+        init();
     </script>
 </body>
 </html>
