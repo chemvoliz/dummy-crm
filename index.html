@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nexus CRM Indonesia | Enterprise Data Platform (UU PDP Compliant)</title>
+    <title>Nexus CRM V2 | Enterprise Data Platform (UU PDP Compliant)</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,6 +15,7 @@
             --border: #e2e8f0;
             --text-main: #33475b;
             --text-light: #64748b;
+            --google-blue: #4285F4;
         }
 
         * { box-sizing: border-box; }
@@ -28,108 +29,63 @@
             overflow: hidden;
         }
 
-        /* Sidebar Navigation */
-        nav {
-            width: 260px;
-            background-color: var(--primary);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            flex-shrink: 0;
+        /* Login Overlay */
+        #login-overlay {
+            position: fixed; inset: 0; background: white; z-index: 2000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
         }
-
-        .logo-section {
-            padding: 25px;
-            font-weight: 600;
-            font-size: 1.2rem;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+        .login-card {
+            width: 400px; padding: 40px; border: 1px solid var(--border); border-radius: 12px;
+            text-align: center; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
+        .google-btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            width: 100%; padding: 12px; border: 1px solid #dadce0; border-radius: 4px;
+            background: white; color: #3c4043; font-weight: 500; cursor: pointer; margin-top: 25px;
+        }
+        .google-btn:hover { background: #f8f9fa; }
 
+        /* Sidebar */
+        nav { width: 260px; background-color: var(--primary); color: white; display: flex; flex-direction: column; flex-shrink: 0; transition: 0.3s; }
+        .logo-section { padding: 25px; font-weight: 600; font-size: 1.2rem; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.05); }
         .nav-links { padding: 20px 12px; flex-grow: 1; }
-
-        .nav-item {
-            padding: 12px 16px;
-            margin-bottom: 4px;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.2s;
-            font-size: 0.9rem;
-            color: #cbd5e1;
-        }
-
+        .nav-item { padding: 12px 16px; margin-bottom: 4px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; gap: 12px; font-size: 0.9rem; color: #cbd5e1; }
         .nav-item:hover { background: rgba(255,255,255,0.1); color: white; }
-        .nav-item.active { background: var(--accent); color: white; font-weight: 500; }
+        .nav-item.active { background: var(--accent); color: white; }
 
-        /* Main Area */
+        /* Main Content */
         main { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; }
-
-        header {
-            background: white;
-            padding: 0 40px;
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            min-height: 70px;
-        }
-
-        .search-container input {
-            width: 350px;
-            padding: 10px 15px;
-            border: 1px solid var(--border);
-            border-radius: 6px;
-            background: #f1f5f9;
-        }
+        header { background: white; padding: 0 40px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; min-height: 70px; }
+        .search-container input { width: 350px; padding: 10px 15px; border: 1px solid var(--border); border-radius: 6px; background: #f1f5f9; }
 
         .view-content { padding: 30px 40px; overflow-y: auto; flex-grow: 1; display: none; }
         .view-content.active { display: block; }
 
-        /* Component Styles */
-        .card { background: white; border-radius: 12px; border: 1px solid var(--border); box-shadow: 0 1px 3px rgba(0,0,0,0.05); padding: 20px; }
-        
+        /* Dashboard Charts */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
+        .chart-card { background: white; padding: 25px; border-radius: 12px; border: 1px solid var(--border); }
+        .funnel-bar { height: 30px; border-radius: 4px; margin-bottom: 10px; display: flex; align-items: center; padding: 0 15px; color: white; font-size: 0.8rem; font-weight: 600; }
+
+        /* Tables */
+        .card { background: white; border-radius: 12px; border: 1px solid var(--border); padding: 20px; }
         table { width: 100%; border-collapse: collapse; }
         th { text-align: left; padding: 12px 15px; font-size: 0.75rem; color: var(--text-light); text-transform: uppercase; border-bottom: 1px solid var(--border); }
         td { padding: 15px; border-bottom: 1px solid #f1f5f9; font-size: 0.9rem; }
         tr:hover td { background: #f8fafc; cursor: pointer; }
 
-        /* Drawer */
-        #drawer {
-            position: fixed; top: 0; right: -750px; width: 700px; height: 100%;
-            background: white; box-shadow: -10px 0 30px rgba(0,0,0,0.1);
-            z-index: 1001; transition: 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99);
-            display: flex; flex-direction: column;
-        }
-        .drawer-header { padding: 25px 30px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
-        .drawer-body { padding: 30px; overflow-y: auto; flex-grow: 1; }
-        
-        .pii-panel { background: #fff7ed; border: 1px solid #ffedd5; padding: 20px; border-radius: 8px; margin-bottom: 25px; }
-        .pii-row { display: flex; margin-bottom: 10px; font-size: 0.9rem; }
-        .pii-label { width: 180px; color: var(--text-light); font-weight: 500; }
-        .pii-value { font-weight: 600; color: #c2410c; }
-
-        .section-header { border-bottom: 2px solid var(--border); padding-bottom: 8px; margin: 30px 0 15px 0; font-weight: 600; color: var(--primary); display: flex; align-items: center; gap: 10px; }
-
-        #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; z-index: 1000; }
-
-        .btn { padding: 10px 20px; border-radius: 6px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.85rem; }
+        /* Buttons & Modals */
+        .btn { padding: 12px 24px; border-radius: 8px; border: none; font-weight: 600; cursor: pointer; transition: 0.2s; font-size: 0.9rem; }
         .btn-primary { background: var(--sap-blue); color: white; }
         .btn-outline { background: white; border: 1px solid var(--border); color: var(--text-main); }
+        .btn-danger { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
 
-        /* Pagination Styles */
-        .pagination { display: flex; justify-content: center; gap: 10px; margin-top: 20px; padding: 20px; }
-        .page-btn { padding: 8px 12px; border: 1px solid var(--border); border-radius: 4px; background: white; cursor: pointer; }
-        .page-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+        /* Drawer & Overlays */
+        #drawer { position: fixed; top: 0; right: -750px; width: 700px; height: 100%; background: white; box-shadow: -10px 0 30px rgba(0,0,0,0.1); z-index: 1001; transition: 0.4s; padding: 30px; overflow-y: auto; }
+        #overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: none; z-index: 1000; }
+        .pii-tag { color: #f97316; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; margin-left: 5px; border: 1px solid #fdba74; padding: 2px 4px; border-radius: 3px; }
 
-        .history-tag { padding: 4px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; }
-        .tag-call { background: #dbeafe; color: #1e40af; }
-        .tag-visit { background: #dcfce7; color: #166534; }
-        .tag-email { background: #fef3c7; color: #92400e; }
+        /* Modal for Download Choice */
+        #download-modal { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: white; padding: 30px; border-radius: 12px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); z-index: 3000; display: none; width: 350px; text-align: center; }
 
         @media print {
             body * { visibility: hidden; }
@@ -140,7 +96,31 @@
 </head>
 <body>
 
-    <div id="overlay" onclick="closeDrawer()"></div>
+    <!-- AUTH SCREEN -->
+    <div id="login-overlay">
+        <div class="login-card">
+            <h2 style="margin:0; color:var(--primary);">Nexus CRM Indonesia</h2>
+            <p style="color:var(--text-light);">Secure Enterprise Access (UU PDP Compliant)</p>
+            <button class="google-btn" onclick="mockLogin()">
+                <img src="https://www.gstatic.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png" width="70" alt="Google">
+                Sign in with Google
+            </button>
+            <p style="font-size: 0.75rem; margin-top: 20px; color: #999;">Only managed corporate accounts can access this workspace.</p>
+        </div>
+    </div>
+
+    <div id="overlay" onclick="closeDrawer(); closeDownloadModal();"></div>
+
+    <!-- DOWNLOAD CHOICE MODAL -->
+    <div id="download-modal">
+        <h3>Export Data</h3>
+        <p style="font-size: 0.9rem; color: var(--text-light);">Choose format for sensitive PII export.</p>
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 20px;">
+            <button class="btn btn-outline" onclick="performDownload('CSV')">📥 Download as .CSV</button>
+            <button class="btn btn-outline" onclick="performDownload('PDF')">📄 Download as .PDF</button>
+            <button class="btn btn-danger" onclick="closeDownloadModal()">Cancel</button>
+        </div>
+    </div>
 
     <nav>
         <div class="logo-section">
@@ -148,74 +128,62 @@
             NEXUS INDONESIA
         </div>
         <div class="nav-links">
-            <div class="nav-item" id="menu-dash" onclick="switchView('dashboard')">🏠 Dashboard</div>
+            <div class="nav-item" id="menu-dash" onclick="switchView('dashboard')">🏠 Dashboard Metrics</div>
             <div class="nav-item active" id="menu-contacts" onclick="switchView('contacts')">👥 Contacts & Leads</div>
-            <div class="nav-item" id="menu-pipe" onclick="switchView('pipeline')">📈 Sales Pipelines</div>
-            <div class="nav-item" id="menu-auto" onclick="switchView('automation')">🤖 Automation</div>
-            <div class="nav-item" id="menu-reports" onclick="switchView('reports')">📑 Cloud Reports</div>
+            <div class="nav-item" id="menu-pipe" onclick="switchView('pipeline')">📈 Sales Pipeline</div>
+            <div class="nav-item" id="menu-data" onclick="switchView('datamgmt')">🛡️ Data Management</div>
+            <div class="nav-item" id="menu-reports" onclick="switchView('reports')">📑 Compliance Logs</div>
         </div>
         <div style="padding: 20px; font-size: 0.7rem; opacity: 0.4;">
-            Audit-Ready: UU PDP No. 27/2022
+            Session ID: NX-2026-LIVE
         </div>
     </nav>
 
     <main>
         <header>
-            <div class="search-container">
-                <input type="text" id="search-input" oninput="handleSearch()" placeholder="Cari NIK, Nama, atau NPWP...">
-            </div>
+            <div class="search-container"><input type="text" id="search-input" oninput="handleSearch()" placeholder="Search PII Data (NIK, NPWP, Name)..."></div>
             <div style="display: flex; align-items: center; gap: 15px;">
-                <span style="font-size: 0.85rem; color: var(--text-light);">Wilayah: <strong>DKI Jakarta</strong></span>
-                <div style="width: 35px; height: 35px; border-radius: 50%; background: #e2e8f0; border: 2px solid var(--accent);"></div>
+                <span id="user-identity" style="font-size: 0.85rem; font-weight: 500;">Admin User</span>
+                <div style="width: 35px; height: 35px; border-radius: 50%; background: var(--accent); color: white; display: flex; align-items: center; justify-content: center; font-weight: bold;">A</div>
             </div>
         </header>
 
         <!-- DASHBOARD VIEW -->
         <div id="view-dashboard" class="view-content">
-            <h1>Ringkasan Eksekutif</h1>
-            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px;">
-                <div class="card" style="padding:20px;">
-                    <div style="color:var(--text-light); font-size: 0.75rem;">Revenue Q2 (Est)</div>
-                    <div style="font-size:1.5rem; font-weight:700;">Rp 48.2B</div>
+            <h1>Workspace Analytics</h1>
+            <div class="dashboard-grid">
+                <div class="chart-card">
+                    <h3>Leads Funnel (By Stage)</h3>
+                    <div class="funnel-bar" style="width: 100%; background: #1e293b;">Prospecting (1,240)</div>
+                    <div class="funnel-bar" style="width: 80%; background: #334155;">Qualified (890)</div>
+                    <div class="funnel-bar" style="width: 50%; background: #475569;">Proposal (420)</div>
+                    <div class="funnel-bar" style="width: 25%; background: var(--accent);">Negotiation (110)</div>
                 </div>
-                <div class="card" style="padding:20px;">
-                    <div style="color:var(--text-light); font-size: 0.75rem;">Total Subjek Data</div>
-                    <div style="font-size:1.5rem; font-weight:700;">100 Accounts</div>
+                <div class="chart-card">
+                    <h3>Regional Revenue Distribution</h3>
+                    <div style="display: flex; justify-content: space-around; align-items: flex-end; height: 150px; padding-top: 20px;">
+                        <div style="width: 40px; background: var(--sap-blue); height: 90%; border-radius: 4px 4px 0 0;"></div>
+                        <div style="width: 40px; background: var(--sap-blue); height: 60%; border-radius: 4px 4px 0 0;"></div>
+                        <div style="width: 40px; background: var(--sap-blue); height: 40%; border-radius: 4px 4px 0 0;"></div>
+                        <div style="width: 40px; background: var(--sap-blue); height: 75%; border-radius: 4px 4px 0 0;"></div>
+                    </div>
+                    <div style="display: flex; justify-content: space-around; font-size: 0.7rem; color: var(--text-light); margin-top: 10px;">
+                        <span>Jakarta</span><span>Surabaya</span><span>Bandung</span><span>Medan</span>
+                    </div>
                 </div>
-                <div class="card" style="padding:20px;">
-                    <div style="color:var(--text-light); font-size: 0.75rem;">PII Diteksi (Chrome)</div>
-                    <div style="font-size:1.5rem; font-weight:700;">3,421 Fields</div>
-                </div>
-                <div class="card" style="padding:20px;">
-                    <div style="color:var(--text-light); font-size: 0.75rem;">Health Score</div>
-                    <div style="font-size:1.5rem; font-weight:700; color:var(--success)">98%</div>
-                </div>
-            </div>
-            <div class="card">
-                <h3>Log Akses Terakhir</h3>
-                <p style="color:var(--text-light); font-size: 0.9rem;">Sistem mendeteksi 100% enkripsi data pada level browser via Chrome Enterprise Premium.</p>
             </div>
         </div>
 
         <!-- CONTACTS VIEW -->
         <div id="view-contacts" class="view-content active">
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
-                <div>
-                    <h1 style="margin: 0;">Kontak & Prospek Strategis</h1>
-                    <p style="color: var(--text-light); margin: 5px 0 0 0;">Menampilkan entitas bisnis dengan proteksi data pribadi tingkat tinggi.</p>
-                </div>
-                <div style="font-size: 0.8rem; color: var(--text-light);">Hasil: <strong id="total-count">100</strong> Data</div>
+                <h1>CRM Database</h1>
+                <div style="font-size: 0.8rem; color: var(--text-light);">Matches: <strong id="total-count">100</strong></div>
             </div>
             <div class="card">
                 <table>
                     <thead>
-                        <tr>
-                            <th>Nama Lengkap</th>
-                            <th>Email (PII)</th>
-                            <th>NIK / KTP (PII)</th>
-                            <th>NPWP (PII)</th>
-                            <th>Status Akun</th>
-                        </tr>
+                        <tr><th>Full Name</th><th>Email <span class="pii-tag">PII</span></th><th>NIK/KTP <span class="pii-tag">PII</span></th><th>NPWP <span class="pii-tag">PII</span></th><th>Status</th></tr>
                     </thead>
                     <tbody id="contact-table"></tbody>
                 </table>
@@ -223,242 +191,191 @@
             </div>
         </div>
 
-        <!-- OTHER VIEWS (Placeholders) -->
-        <div id="view-pipeline" class="view-content"><h1>Pipeline Penjualan</h1><div class="card">Modul Pipeline sedang memproses 42 deals aktif.</div></div>
-        <div id="view-automation" class="view-content"><h1>Otomatisasi</h1><div class="card">Workflows aktif: 12. Policy: Privacy First.</div></div>
-        <div id="view-reports" class="view-content">
-            <h1>Laporan Cloud</h1>
+        <!-- PIPELINE VIEW -->
+        <div id="view-pipeline" class="view-content">
+            <h1>Sales Pipeline (Active Deals)</h1>
             <div class="card">
-                <p>Ekspor laporan kepatuhan UU PDP untuk audit internal.</p>
-                <button class="btn btn-outline" onclick="triggerPrint()">📥 Download PDF Audit (Scanned by Chrome)</button>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Deal Opportunity</th>
+                            <th>Company</th>
+                            <th>Lead Contact <span class="pii-tag">PII</span></th>
+                            <th>Value (Non-PII)</th>
+                            <th>Stage</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pipeline-table"></tbody>
+                </table>
             </div>
+        </div>
+
+        <!-- DATA MANAGEMENT VIEW -->
+        <div id="view-datamgmt" class="view-content">
+            <h1>Data Management & Compliance</h1>
+            <p style="color:var(--text-light)">Trigger Chrome Enterprise Premium DLP policies using these functional controls.</p>
+            <div class="dashboard-grid">
+                <div class="card" style="text-align: center;">
+                    <h2 style="font-size: 1.2rem;">Bulk Upload</h2>
+                    <p style="font-size: 0.85rem;">Ingest CSV files. Scanned for PII & Malware.</p>
+                    <label class="btn btn-primary" style="display: inline-block;">
+                        📤 UPLOAD DATA
+                        <input type="file" style="display: none;" onchange="mockUpload()">
+                    </label>
+                    <div id="upload-progress" style="margin-top: 15px; font-weight: bold; color: var(--success); display: none;">Scan in Progress...</div>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <h2 style="font-size: 1.2rem;">Data Export</h2>
+                    <p style="font-size: 0.85rem;">Download sensitive PII records.</p>
+                    <button class="btn btn-primary" onclick="openDownloadModal()">📥 DOWNLOAD RECORDS</button>
+                </div>
+                <div class="card" style="text-align: center;">
+                    <h2 style="font-size: 1.2rem;">Secure Printing</h2>
+                    <p style="font-size: 0.85rem;">Print customer profiles (detected by browser).</p>
+                    <button class="btn btn-primary" onclick="triggerPrint()">🖨️ PRINT DATABASE</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-reports" class="view-content">
+            <h1>Audit Logs</h1>
+            <div class="card">No incidents reported in the last 24 hours. Data fully protected.</div>
         </div>
     </main>
 
     <!-- Details Drawer -->
     <div id="drawer">
-        <div class="drawer-header">
-            <div>
-                <h2 id="dr-name" style="margin:0;">Nama Lengkap</h2>
-                <span id="dr-loc" style="color:var(--text-light); font-size: 0.85rem;">Lokasi</span>
-            </div>
-            <span style="cursor:pointer; font-size: 28px; color: var(--text-light);" onclick="closeDrawer()">&times;</span>
+        <h2 id="dr-name">Name</h2>
+        <div style="background: #fff7ed; padding: 20px; border-radius: 8px; margin-bottom: 25px;">
+            <p><strong>NIK:</strong> <span id="dr-nik">---</span></p>
+            <p><strong>NPWP:</strong> <span id="dr-npwp">---</span></p>
         </div>
-        <div class="drawer-body">
-            <div class="pii-panel">
-                <div class="pii-row"><span class="pii-label">NIK (No. KTP)</span><span class="pii-value" id="dr-nik">---</span></div>
-                <div class="pii-row"><span class="pii-label">No. NPWP</span><span class="pii-value" id="dr-npwp">---</span></div>
-                <div class="pii-row"><span class="pii-label">Alamat Sesuai KTP</span><span class="pii-value" id="dr-addr">---</span></div>
-            </div>
-
-            <div class="section-header">👥 Stakeholder Terkait (Min. 3)</div>
-            <table style="font-size: 0.85rem;">
-                <thead><tr><th>Nama</th><th>Jabatan</th><th>Kontak (PII)</th></tr></thead>
-                <tbody id="dr-subs"></tbody>
-            </table>
-
-            <div class="section-header">📜 Contact History (Riwayat Interaksi)</div>
-            <table style="font-size: 0.85rem;">
-                <thead><tr><th>Tanggal</th><th>Metode</th><th>Kegiatan</th><th>Hasil</th></tr></thead>
-                <tbody id="dr-history"></tbody>
-            </table>
-        </div>
-        <div class="drawer-footer" style="padding: 20px 30px; border-top: 1px solid var(--border); background: #f8fafc; text-align: right;">
-            <button class="btn btn-outline" onclick="closeDrawer()">Tutup</button>
-            <button class="btn btn-primary" style="margin-left: 10px;" onclick="triggerPrint()">🖨️ Cetak Profil (DLP Audit)</button>
+        <h3>Known Contacts</h3>
+        <tbody id="dr-subs"></tbody>
+        <div style="margin-top: 30px;">
+            <button class="btn btn-primary" onclick="triggerPrint()">Print Full Profile</button>
         </div>
     </div>
 
     <div id="print-area" style="display:none;"></div>
 
     <script>
-        // --- DATA GENERATOR FOR 100 RECORDS ---
-        const firstNames = ["Budi", "Siti", "Andi", "Rina", "Dedi", "Agus", "Dewi", "Eko", "Maya", "Hendra", "Lia", "Doni", "Ratna", "Fajar", "Ika", "Taufik", "Sari", "Dimas", "Anita", "Rian"];
-        const lastNames = ["Santoso", "Aminah", "Pratama", "Wijaya", "Putri", "Kurniawan", "Lestari", "Hidayat", "Sari", "Gunawan", "Setiawan", "Utami", "Nugroho", "Saputra", "Wulandari"];
-        const companies = ["Telkom Indonesia", "Pertamina", "Gojek", "Traveloka", "Bank Mandiri", "BCA", "Indofood", "Unilever ID", "Bukalapak", "Tokopedia", "Grab ID", "Astra Intl", "PLN", "Bio Farma", "Adaro"];
-        const cities = ["Jakarta Selatan", "Surabaya", "Bandung", "Medan", "Semarang", "Makassar", "Palembang", "Tangerang", "Bekasi", "Depok"];
-        const roles = ["CEO", "CFO", "Director of IT", "Legal Head", "VP Sales", "Procurement Manager", "HR Director", "Account Manager"];
-        const methods = ["Call In", "Face to Face Meeting", "Video Conference", "WhatsApp Business", "Email Thread"];
-        const activities = ["Diskusi Roadmap Q3", "Negosiasi Kontrak", "Technical Workshop", "Kunjungan Site Visit", "Follow-up Invoice", "Presentasi Produk", "Review UU PDP"];
-        const results = ["Deal Closed", "Follow-up Scheduled", "Draft Sent", "Pending Approval", "On Hold", "Success", "Contract Signed"];
-
+        // --- DATA ENGINE ---
+        const firstNames = ["Budi", "Siti", "Andi", "Rina", "Dedi", "Agus", "Dewi", "Eko", "Maya", "Hendra"];
+        const lastNames = ["Santoso", "Aminah", "Pratama", "Wijaya", "Putri", "Kurniawan", "Lestari", "Hidayat"];
+        const companies = ["Telkom Indonesia", "Pertamina", "Gojek", "Traveloka", "Bank Mandiri", "BCA", "Indofood"];
+        const pipeStages = ["Qualification", "Needs Analysis", "Proposal Sent", "Negotiation", "Legal Review"];
+        
         let indoData = [];
         for (let i = 0; i < 100; i++) {
-            const fName = firstNames[i % firstNames.length];
-            const lName = lastNames[(i + 3) % lastNames.length];
-            const fullName = fName + " " + lName;
-            const company = companies[i % companies.length];
-            
-            // Generate Realistic ID Numbers
-            const nik = "3" + Math.floor(Math.random() * 900000000000000 + 100000000000000);
-            const npwp = "0" + Math.floor(Math.random() * 9) + "." + Math.floor(Math.random() * 999) + "." + Math.floor(Math.random() * 999) + "." + Math.floor(Math.random() * 9) + "-0" + Math.floor(Math.random() * 99) + ".000";
-
-            // Generate 3 Stakeholders
-            let subs = [];
-            for (let j = 0; j < 3; j++) {
-                const subFName = firstNames[(i + j + 5) % firstNames.length];
-                const subLName = lastNames[(i + j + 8) % lastNames.length];
-                subs.push({
-                    n: subFName + " " + subLName,
-                    j: roles[(i + j) % roles.length],
-                    c: `+62 8${Math.floor(Math.random() * 999999999)} / ${subFName.toLowerCase()}@${company.toLowerCase().replace(" ", "")}.co.id`
-                });
-            }
-
-            // Generate 5 History Items
-            let history = [];
-            for (let k = 0; k < 5; k++) {
-                history.push({
-                    t: `2026-0${4 - Math.floor(k/2)}-${10 + (k*2)}`,
-                    m: methods[k % methods.length],
-                    k: activities[(i + k) % activities.length],
-                    r: results[(i + k) % results.length]
-                });
-            }
-
+            const name = firstNames[i % 10] + " " + lastNames[i % 8];
             indoData.push({
-                name: fullName,
-                email: `${fName.toLowerCase()}.${lName.toLowerCase()}@${company.toLowerCase().replace(" ", "")}.com`,
-                nik: nik,
-                npwp: npwp,
-                loc: cities[i % cities.length],
-                addr: `Jl. Melati No. ${i+1}, Cluster ${company}`,
-                subs: subs,
-                history: history
+                name: name,
+                company: companies[i % 7],
+                email: `${name.toLowerCase().replace(" ",".")}@${companies[i%7].toLowerCase().replace(" ","")}.co.id`,
+                nik: "3" + Math.floor(Math.random() * 900000000000000 + 100000000000000),
+                npwp: "01." + Math.floor(Math.random()*900) + "." + Math.floor(Math.random()*900) + ".0-012.000",
+                value: "Rp " + (Math.floor(Math.random() * 500) + 100) + "M",
+                stage: pipeStages[i % 5]
             });
         }
 
-        // --- APP LOGIC ---
-        let currentPage = 1;
-        const rowsPerPage = 10;
-        let searchTerm = "";
+        // --- AUTH & NAV ---
+        function mockLogin() {
+            document.getElementById('login-overlay').style.opacity = '0';
+            setTimeout(() => { document.getElementById('login-overlay').style.display = 'none'; }, 300);
+        }
 
-        function switchView(view) {
+        function switchView(viewId) {
             document.querySelectorAll('.view-content').forEach(v => v.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            document.getElementById('view-' + view).classList.add('active');
-            document.getElementById('menu-' + (view === 'dashboard' ? 'dash' : (view === 'contacts' ? 'contacts' : (view === 'pipeline' ? 'pipe' : (view === 'automation' ? 'auto' : 'reports'))))).classList.add('active');
+            document.getElementById('view-' + viewId).classList.add('active');
+            document.getElementById('menu-' + (viewId === 'dashboard' ? 'dash' : (viewId === 'contacts' ? 'contacts' : (viewId === 'pipeline' ? 'pipe' : (viewId === 'datamgmt' ? 'data' : 'reports'))))).classList.add('active');
+            if(viewId === 'contacts') renderTable();
+            if(viewId === 'pipeline') renderPipeline();
         }
+
+        // --- SEARCH & TABLE ---
+        let currentPage = 1;
+        let searchTerm = "";
 
         function handleSearch() {
             searchTerm = document.getElementById('search-input').value.toLowerCase();
-            currentPage = 1; // Reset to first page on new search
+            currentPage = 1;
             renderTable();
         }
 
         function renderTable() {
             const table = document.getElementById('contact-table');
+            const filtered = indoData.filter(d => d.name.toLowerCase().includes(searchTerm) || d.nik.includes(searchTerm));
+            document.getElementById('total-count').innerText = filtered.length;
             table.innerHTML = "";
-
-            // Apply search filtering
-            const filteredData = indoData.filter(d => 
-                d.name.toLowerCase().includes(searchTerm) || 
-                d.nik.toLowerCase().includes(searchTerm) || 
-                d.npwp.toLowerCase().includes(searchTerm)
-            );
-
-            document.getElementById('total-count').innerText = filteredData.length;
-
-            const start = (currentPage - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
-            const pageData = filteredData.slice(start, end);
-
-            pageData.forEach((d) => {
-                // Find global index in original array for openDrawer
-                const globalIndex = indoData.indexOf(d);
-                const tr = document.createElement('tr');
-                tr.onclick = () => openDrawer(globalIndex);
-                tr.innerHTML = `
-                    <td><strong>${d.name}</strong></td>
-                    <td>${d.email}</td>
-                    <td>${d.nik}</td>
-                    <td>${d.npwp}</td>
-                    <td><span style="color:var(--success)">● Verified</span></td>
-                `;
-                table.appendChild(tr);
+            filtered.slice((currentPage-1)*10, currentPage*10).forEach(d => {
+                table.innerHTML += `<tr onclick="openDrawer(${indoData.indexOf(d)})"><td><strong>${d.name}</strong></td><td>${d.email}</td><td>${d.nik}</td><td>${d.npwp}</td><td><span style="color:var(--success)">Active</span></td></tr>`;
             });
-            renderPagination(filteredData.length);
+            renderPagination(filtered.length);
         }
 
-        function renderPagination(totalItems) {
-            const container = document.getElementById('pagination');
-            container.innerHTML = "";
-            const totalPages = Math.ceil(totalItems / rowsPerPage);
+        function renderPipeline() {
+            const table = document.getElementById('pipeline-table');
+            table.innerHTML = "";
+            indoData.slice(0, 15).forEach(d => {
+                table.innerHTML += `<tr><td><strong>Opportunity ${d.company}</strong></td><td>${d.company}</td><td>${d.email} <span class="pii-tag">PII</span></td><td>${d.value}</td><td><span class="btn btn-outline" style="padding:4px 8px; font-size:0.7rem;">${d.stage}</span></td></tr>`;
+            });
+        }
 
-            if (totalPages <= 1) return;
-
-            // Simple pagination display logic
-            for (let p = 1; p <= totalPages; p++) {
-                if (p === 1 || p === totalPages || (p >= currentPage - 1 && p <= currentPage + 1)) {
-                    const btn = document.createElement('button');
-                    btn.className = `page-btn ${p === currentPage ? 'active' : ''}`;
-                    btn.innerText = p;
-                    btn.onclick = () => { currentPage = p; renderTable(); };
-                    container.appendChild(btn);
-                } else if (p === currentPage - 2 || p === currentPage + 2) {
-                    const dot = document.createElement('span');
-                    dot.innerText = "...";
-                    container.appendChild(dot);
-                }
+        function renderPagination(total) {
+            const pg = document.getElementById('pagination');
+            pg.innerHTML = "";
+            for(let i=1; i<=Math.ceil(total/10); i++) {
+                if(i > 5 && i < Math.ceil(total/10)) continue;
+                pg.innerHTML += `<button class="page-btn ${i===currentPage?'active':''}" onclick="currentPage=${i}; renderTable();">${i}</button>`;
             }
         }
 
+        // --- DRAWER ---
         function openDrawer(i) {
             const d = indoData[i];
             document.getElementById('dr-name').innerText = d.name;
-            document.getElementById('dr-loc').innerText = d.loc + " | " + d.addr;
             document.getElementById('dr-nik').innerText = d.nik;
             document.getElementById('dr-npwp').innerText = d.npwp;
-            document.getElementById('dr-addr').innerText = d.addr;
-
-            // Render Subs
-            let subHtml = "";
-            d.subs.forEach(s => subHtml += `<tr><td>${s.n}</td><td>${s.j}</td><td style="color:var(--sap-blue)">${s.c}</td></tr>`);
-            document.getElementById('dr-subs').innerHTML = subHtml;
-
-            // Render History
-            let histHtml = "";
-            d.history.forEach(h => {
-                const methodClass = h.m.includes("Call") ? "tag-call" : (h.m.includes("Face") ? "tag-visit" : "tag-email");
-                histHtml += `
-                    <tr>
-                        <td style="white-space:nowrap">${h.t}</td>
-                        <td><span class="history-tag ${methodClass}">${h.m}</span></td>
-                        <td style="font-weight:500">${h.k}</td>
-                        <td style="color:var(--success)">${h.r}</td>
-                    </tr>`;
-            });
-            document.getElementById('dr-history').innerHTML = histHtml;
-
             document.getElementById('overlay').style.display = 'block';
             document.getElementById('drawer').style.right = '0';
         }
+        function closeDrawer() { document.getElementById('drawer').style.right = '-750px'; document.getElementById('overlay').style.display = 'none'; }
 
-        function closeDrawer() {
-            document.getElementById('overlay').style.display = 'none';
-            document.getElementById('drawer').style.right = '-750px';
+        // --- DATA MGMT ACTIONS ---
+        function openDownloadModal() { document.getElementById('download-modal').style.display = 'block'; document.getElementById('overlay').style.display = 'block'; }
+        function closeDownloadModal() { document.getElementById('download-modal').style.display = 'none'; document.getElementById('overlay').style.display = 'none'; }
+
+        function performDownload(type) {
+            const csv = "Name,NIK,NPWP\n" + indoData.slice(0,5).map(d => `${d.name},${d.nik},${d.npwp}`).join("\n");
+            const blob = new Blob([csv], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Nexus_PII_Export.${type.toLowerCase()}`;
+            a.click();
+            closeDownloadModal();
+        }
+
+        function mockUpload() {
+            document.getElementById('upload-progress').style.display = 'block';
+            setTimeout(() => { document.getElementById('upload-progress').innerText = "File Uploaded & Audited."; }, 1500);
         }
 
         function triggerPrint() {
-            const d = { name: document.getElementById('dr-name').innerText, nik: document.getElementById('dr-nik').innerText };
-            const content = `
-                <div style="padding:40px; font-family:sans-serif; color:#1a1a1a;">
-                    <div style="text-align:right; color:#666; font-size:12px;">NEXUS CRM SECURE EXPORT</div>
-                    <h1 style="color:#1e293b; border-bottom:4px solid #ff7a59; padding-bottom:10px;">PROFIL SUBJEK DATA PRIBADI</h1>
-                    <p>Klasifikasi: <strong>SANGAT RAHASIA (UU PDP No. 27/2022)</strong></p>
-                    <table border="1" cellpadding="10" style="width:100%; border-collapse:collapse; margin-top:20px;">
-                        <tr><td width="30%">Nama Lengkap</td><td>${d.name || "Global List"}</td></tr>
-                        <tr><td>NIK / No. KTP</td><td>${d.nik || "TERDETEKSI: 3275010106850001"}</td></tr>
-                        <tr><td>NPWP</td><td>${document.getElementById('dr-npwp').innerText || "TERDETEKSI"}</td></tr>
+            // Include NIK/NPWP for Chrome DLP engine to "see" and block
+            document.getElementById('print-area').innerHTML = `
+                <div style="padding:50px;">
+                    <h1>INTERNAL SECURITY EXPORT</h1>
+                    <p>Protected by UU PDP. SSN/NIK Patterns detected.</p>
+                    <table border="1" style="width:100%; border-collapse:collapse;">
+                        <tr><td>NIK: 3275010106850001</td></tr>
+                        <tr><td>NPWP: 01.234.567.8-012.000</td></tr>
+                        <tr><td>Account: ${document.getElementById('dr-name').innerText || "Global Database"}</td></tr>
                     </table>
-                    <div style="margin-top:40px; padding:20px; border:2px dashed red; background:#fff5f5; text-align:center;">
-                        <h2 style="color:red; margin:0;">DLP BLOCK TRIGGERED</h2>
-                        <p style="margin:5px 0 0 0;">Chrome Enterprise detected ID-NIK and ID-NPWP patterns in this print job.</p>
-                    </div>
-                    <p style="font-size:10px; color:#999; margin-top:50px;">Audit ID: NX-${Math.random().toString(36).substr(2, 9).toUpperCase()}</p>
-                </div>
-            `;
-            document.getElementById('print-area').innerHTML = content;
+                </div>`;
             window.print();
         }
 
