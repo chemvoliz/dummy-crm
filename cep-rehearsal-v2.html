@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BukanBankIndonesia CRM | CEP Rehearsal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #0f172a;
+      --primary2: #1e293b;
+      --accent: #2563eb;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --bg: #f8fafc;
+      --card: #ffffff;
+      --text: #0f172a;
+      --soft: #64748b;
+      --line: #e2e8f0;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.12);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      display: flex;
+      overflow: hidden;
+    }
+    body.watermark-on { }
+    .watermark-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 35;
+      display: none;
+      overflow: hidden;
+    }
+    .watermark-layer.active { display: block; }
+    .watermark-tile {
+      position: absolute;
+      transform: rotate(-24deg);
+      transform-origin: center;
+      color: rgba(220, 38, 38, 0.18);
+      font-size: 24px;
+      letter-spacing: 0.12em;
+      font-weight: 800;
+      white-space: nowrap;
+      text-transform: uppercase;
+      user-select: none;
+      text-shadow: 0 0 1px rgba(255,255,255,0.12);
+    }
+    nav {
+      width: 280px;
+      background: linear-gradient(180deg, var(--primary), var(--primary2));
+      color: white;
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 3;
+    }
+    .logo {
+      padding: 28px 24px;
+      font-weight: 800;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .nav-links { padding: 18px 14px; flex: 1; }
+    .nav-item {
+      padding: 14px 16px;
+      border-radius: 14px;
+      color: #cbd5e1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      margin-bottom: 8px;
+      transition: 0.2s;
+    }
+    .nav-item:hover, .nav-item.active {
+      background: rgba(255,255,255,0.1);
+      color: white;
+    }
+    .nav-foot {
+      padding: 18px 24px 24px;
+      color: #94a3b8;
+      font-size: 12px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      position: relative;
+      z-index: 3;
+    }
+    header {
+      min-height: 86px;
+      background: white;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 16px 28px;
+    }
+    .search {
+      flex: 1;
+      max-width: 440px;
+      padding: 12px 16px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #f8fafc;
+      font-size: 14px;
+    }
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .toggle-card {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 14px;
+      padding: 10px 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 6px 18px rgba(15,23,42,0.05);
+    }
+    .toggle-card small { color: var(--soft); display: block; }
+    .toggle-card strong { font-size: 13px; display: block; }
+    .switch { position: relative; width: 46px; height: 26px; flex-shrink: 0; }
+    .switch input { display: none; }
+    .slider {
+      position: absolute; inset: 0; background: #cbd5e1; border-radius: 999px; transition: 0.2s;
+    }
+    .slider::before {
+      content: ""; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.2s;
+      box-shadow: 0 2px 8px rgba(15,23,42,0.2);
+    }
+    .switch input:checked + .slider { background: var(--accent); }
+    .switch input:checked + .slider::before { transform: translateX(20px); }
+    .views { flex: 1; overflow: auto; padding: 28px; }
+    .view { display: none; }
+    .view.active { display: block; }
+    .hero { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 24px; }
+    .hero h1 { margin: 0; font-size: 30px; letter-spacing: -0.03em; }
+    .hero p { margin: 8px 0 0; color: var(--soft); }
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px; padding: 9px 12px; border-radius: 999px; font-size: 12px; font-weight: 700;
+      border: 1px solid var(--line); background: white;
+    }
+    .badge.good { color: #166534; background: #dcfce7; border-color: #bbf7d0; }
+    .badge.warn { color: #92400e; background: #fef3c7; border-color: #fde68a; }
+    .grid4, .grid3, .grid2 {
+      display: grid; gap: 18px;
+    }
+    .grid4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+    .grid3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+    .grid2 { grid-template-columns: 1.6fr 1fr; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      box-shadow: var(--shadow);
+      padding: 22px;
+    }
+    .stat-title { color: var(--soft); font-size: 13px; }
+    .stat-value { margin-top: 8px; font-size: 28px; font-weight: 800; letter-spacing: -0.03em; }
+    .hint { color: var(--soft); font-size: 13px; }
+    .section-title { margin: 0 0 16px; font-size: 18px; font-weight: 800; }
+    .bars { display: grid; gap: 16px; }
+    .bar-row { display: grid; grid-template-columns: 120px 1fr 70px; align-items: center; gap: 12px; }
+    .track { height: 14px; border-radius: 999px; background: #eef2ff; overflow: hidden; }
+    .fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--accent), #60a5fa); }
+    .stage-pill, .method-pill {
+      padding: 6px 10px; border-radius: 999px; font-size: 12px; font-weight: 700; display: inline-block;
+    }
+    .stage-prospecting { background: #e2e8f0; color: #334155; }
+    .stage-qualified { background: #dbeafe; color: #1d4ed8; }
+    .stage-proposal { background: #ede9fe; color: #6d28d9; }
+    .stage-negotiation { background: #fef3c7; color: #b45309; }
+    .stage-won { background: #dcfce7; color: #15803d; }
+    .method-email { background: #dbeafe; color: #1d4ed8; }
+    .method-call { background: #ede9fe; color: #6d28d9; }
+    .method-meeting { background: #dcfce7; color: #15803d; }
+    .method-wa { background: #fef9c3; color: #a16207; }
+    table { width: 100%; border-collapse: collapse; }
+    th {
+      text-align: left; font-size: 12px; color: var(--soft); text-transform: uppercase; letter-spacing: 0.06em; padding: 14px 12px; border-bottom: 1px solid var(--line);
+    }
+    td { padding: 16px 12px; border-bottom: 1px solid #edf2f7; font-size: 14px; vertical-align: top; }
+    tbody tr:hover td { background: #f8fbff; }
+    .clickable { cursor: pointer; }
+    .pii-tag {
+      display: inline-block; margin-left: 6px; font-size: 10px; font-weight: 800; color: #b91c1c; background: #fee2e2; border: 1px solid #fecaca; padding: 3px 6px; border-radius: 999px;
+    }
+    .pagination { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 16px; }
+    .page-btn {
+      min-width: 36px; height: 36px; border: 1px solid var(--line); border-radius: 12px; background: white; cursor: pointer; font-weight: 700;
+    }
+    .page-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+    .btn {
+      border: none; border-radius: 14px; padding: 12px 16px; font-weight: 700; cursor: pointer; font-family: inherit;
+      display: inline-flex; align-items: center; gap: 10px;
+    }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-outline { background: white; color: var(--text); border: 1px solid var(--line); }
+    .btn-danger { background: #fee2e2; color: #b91c1c; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .mini-list { display: grid; gap: 12px; }
+    .mini-item {
+      border: 1px solid var(--line); border-radius: 16px; padding: 14px; background: white;
+      display: flex; justify-content: space-between; gap: 12px; align-items: flex-start;
+    }
+    .drawer, .overlay, .modal, .login-overlay {
+      position: fixed;
+    }
+    .overlay {
+      inset: 0; background: rgba(15, 23, 42, 0.55); backdrop-filter: blur(4px); display: none; z-index: 40;
+    }
+    .drawer {
+      top: 0; right: -760px; width: 720px; max-width: calc(100vw - 40px); height: 100%; background: white; z-index: 50;
+      transition: 0.28s ease; box-shadow: -24px 0 70px rgba(15,23,42,0.2); overflow: auto; padding: 28px;
+    }
+    .drawer.open { right: 0; }
+    .pill-line {
+      display: grid; gap: 12px; margin-bottom: 18px;
+    }
+    .pill-row {
+      border: 1px solid var(--line); background: #fffaf3; border-radius: 16px; padding: 14px 16px; display: flex; justify-content: space-between; gap: 12px;
+    }
+    .action-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 16px; }
+    .action-card { border: 1px solid var(--line); border-radius: 20px; padding: 18px; background: white; }
+    .log-box {
+      border: 1px solid var(--line); border-radius: 20px; background: white; padding: 18px; max-height: 280px; overflow: auto;
+    }
+    .log-item { padding: 12px 0; border-bottom: 1px solid #edf2f7; font-size: 14px; }
+    .log-item:last-child { border-bottom: none; }
+    .login-overlay {
+      inset: 0; background: radial-gradient(circle at top right, #1d4ed8 0%, #0f172a 45%, #020617 100%); display: grid; place-items: center; z-index: 100;
+      padding: 24px;
+    }
+    .login-card {
+      width: min(920px, 100%); background: white; border-radius: 28px; box-shadow: 0 28px 80px rgba(2,6,23,0.4); overflow: hidden;
+      display: grid; grid-template-columns: 1.1fr 0.9fr;
+    }
+    .login-pane { padding: 34px; }
+    .login-pane.dark { background: linear-gradient(180deg, #0f172a, #111827); color: white; }
+    .select, .textarea {
+      width: 100%; padding: 12px 14px; border: 1px solid var(--line); border-radius: 14px; font-family: inherit; font-size: 14px; background: white;
+    }
+    .textarea { min-height: 96px; resize: vertical; }
+    .criteria { display: grid; gap: 12px; margin-top: 18px; }
+    .criteria-row {
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 12px 14px; background: rgba(255,255,255,0.04);
+      display: flex; justify-content: space-between; gap: 12px;
+    }
+    .criteria-row.pass { border-color: rgba(16,185,129,0.35); }
+    .criteria-row.fail { border-color: rgba(239,68,68,0.35); }
+    .status-pass { color: #34d399; font-weight: 800; }
+    .status-fail { color: #fca5a5; font-weight: 800; }
+    .modal {
+      inset: 0; display: none; place-items: center; z-index: 60; padding: 24px;
+    }
+    .modal-card {
+      width: min(560px, 100%); background: white; border-radius: 24px; box-shadow: 0 24px 80px rgba(15,23,42,0.24); padding: 24px;
+      border: 1px solid var(--line);
+    }
+    .modal-card.blocked { border-color: #fecaca; }
+    .modal-card.allowed { border-color: #bbf7d0; }
+    .kicker { font-size: 12px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: var(--soft); }
+    .modal h2 { margin: 10px 0 8px; font-size: 28px; letter-spacing: -0.03em; }
+    .modal p { margin: 0; color: var(--soft); line-height: 1.55; }
+    .reason-list { margin: 16px 0 0; padding-left: 18px; color: var(--text); }
+    .field-row { display: grid; gap: 8px; margin-bottom: 14px; }
+    .row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .pii-cell { font-weight: 700; position: relative; }
+    .masked { letter-spacing: 0.1em; }
+
+    .pipeline-tools { display:flex; gap:10px; flex-wrap:wrap; }
+    .seg-btn {
+      border: 1px solid var(--line);
+      background: white;
+      color: var(--text);
+      border-radius: 999px;
+      padding: 10px 14px;
+      font-weight: 700;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .seg-btn.active { background: var(--accent); color: white; border-color: var(--accent); }
+    .pipeline-panel { display: none; }
+    .pipeline-panel.active { display: block; }
+    .kanban-board {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(220px, 1fr));
+      gap: 16px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+    .kanban-col {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: #f8fafc;
+      min-height: 240px;
+      padding: 14px;
+    }
+    .kanban-head {
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom: 12px;
+    }
+    .kanban-count {
+      min-width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      background: white;
+      border: 1px solid var(--line);
+      display:grid;
+      place-items:center;
+      font-size: 12px;
+      font-weight: 800;
+      color: var(--soft);
+    }
+    .kanban-stack { display:grid; gap: 12px; }
+    .kanban-card {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: white;
+      padding: 14px;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.06);
+    }
+    .kanban-card-title {
+      font-size: 14px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+    .kanban-meta {
+      display:grid;
+      gap: 8px;
+      font-size: 13px;
+      color: var(--soft);
+    }
+    .context-menu {
+      position: fixed;
+      z-index: 95;
+      display: none;
+      min-width: 200px;
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 18px 40px rgba(15,23,42,0.18);
+      padding: 8px;
+    }
+    .context-menu button {
+      width: 100%;
+      border: none;
+      background: transparent;
+      text-align: left;
+      padding: 11px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .context-menu button:hover { background: #eff6ff; }
+    .clipboard-grid {
+      display:grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .selectable-box {
+      border: 1px dashed #93c5fd;
+      border-radius: 18px;
+      background: #f8fbff;
+      padding: 16px;
+      min-height: 160px;
+      line-height: 1.7;
+      user-select: text;
+      white-space: pre-wrap;
+      cursor: text;
+    }
+    .kbd {
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      min-width: 28px;
+      height: 28px;
+      padding: 0 8px;
+      border-radius: 8px;
+      border: 1px solid var(--line);
+      background: white;
+      box-shadow: 0 2px 4px rgba(15,23,42,0.04);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .stack { display:grid; gap: 10px; }
+
+    @media (max-width: 1100px) {
+      .grid4, .grid3, .grid2, .action-grid, .login-card { grid-template-columns: 1fr; }
+      nav { display: none; }
+      body { display: block; }
+      main { min-height: 100vh; }
+      header { align-items: flex-start; flex-direction: column; }
+      .top-controls { justify-content: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <div class="login-pane dark">
+        <div class="kicker" style="color:#93c5fd;">Rehearsal entry point</div>
+        <h1 style="margin:10px 0 8px; font-size:34px; letter-spacing:-0.04em;">Chrome Enterprise Premium access check</h1>
+        <p style="margin:0; color:#cbd5e1; line-height:1.65;">Use this screen to rehearse Context-Aware Access before the CRM opens. In the real environment, Chrome Enterprise Premium evaluates user and device context outside the application itself.</p>
+        <div class="criteria" id="criteriaPreview"></div>
+      </div>
+      <div class="login-pane">
+        <div class="kicker">Demo controls</div>
+        <h2 style="margin:10px 0 6px; font-size:28px; letter-spacing:-0.03em;">Choose your scenario</h2>
+        <p class="hint" style="margin-bottom:20px;">Use one preset for rehearsal. For a real demo, turn off both simulation toggles after sign-in.</p>
+
+        <div class="field-row">
+          <label for="personaSelect"><strong>Access preset</strong></label>
+          <select id="personaSelect" class="select">
+            <option value="trusted">Trusted employee on managed device</option>
+            <option value="unmanaged">Employee on unmanaged device</option>
+            <option value="geoBlocked">Employee outside approved location</option>
+            <option value="policyConflict">Managed device with policy conflict</option>
+          </select>
+        </div>
+
+        <div class="field-row">
+          <label for="identityInput"><strong>Simulated signed-in account</strong></label>
+          <input id="identityInput" class="select" type="email" value="se.admin@bukanbankindo.co.id">
+        </div>
+
+        <div class="field-row">
+          <div class="toggle-card" style="padding:12px 14px;">
+            <label class="switch"><input type="checkbox" id="simulateCAA" checked><span class="slider"></span></label>
+            <div>
+              <strong>Simulate Context-Aware Access</strong>
+              <small>Shows allow or deny before the site opens</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="toggle-card" style="padding:12px 14px;">
+            <label class="switch"><input type="checkbox" id="browserDecisionPrecheck" checked><span class="slider"></span></label>
+            <div>
+              <strong>Start with browser simulation ON</strong>
+              <small>Masks PII and blocks monitored actions after login</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="row" style="margin-top:22px;">
+          <button class="btn btn-primary" id="signInBtn">Sign in with Google</button>
+        </div>
+        <p class="hint" style="margin-top:16px;">Recommended flow: rehearse with both toggles ON, then switch them OFF during the real managed-Chrome demo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="watermark-layer" id="watermarkLayer"></div>
+  <div class="overlay" id="overlay"></div>
+
+  <nav>
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+      BUKAN BANK INDO
+    </div>
+    <div class="nav-links">
+      <div class="nav-item active" data-view="dashboard">Dashboard</div>
+      <div class="nav-item" data-view="contacts">Contacts & Leads</div>
+      <div class="nav-item" data-view="pipeline">Sales Pipeline</div>
+      <div class="nav-item" data-view="security">Security Controls</div>
+    </div>
+    <div class="nav-foot">
+      Rehearsal page for Chrome Enterprise Premium storytelling.
+    </div>
+  </nav>
+
+  <main>
+    <header>
+      <input class="search" id="searchInput" type="text" placeholder="Search by name, email, NIK, NPWP, or company...">
+      <div class="top-controls">
+        <div class="toggle-card">
+          <label class="switch"><input type="checkbox" id="browserDecisionToggle"><span class="slider"></span></label>
+          <div>
+            <strong>Simulate Browser Decision</strong>
+            <small>Mask PII and block print / upload / download / copy</small>
+          </div>
+        </div>
+        <div class="toggle-card">
+          <label class="switch"><input type="checkbox" id="watermarkToggle"><span class="slider"></span></label>
+          <div>
+            <strong>Watermark Overlay</strong>
+            <small>Rehearsal-only visual for sensitive-site demo</small>
+          </div>
+        </div>
+        <div class="badge" id="modeBadge">Mode: Real demo</div>
+      </div>
+    </header>
+
+    <div class="views">
+      <section class="view active" id="view-dashboard">
+        <div class="hero">
+          <div>
+            <h1>Executive Dashboard</h1>
+            <p>Demo page for DLP, sensitive actions, and access gating.</p>
+          </div>
+          <div class="badge good" id="securityBadge">DLP Story Ready</div>
+        </div>
+        <div class="grid4" id="statsGrid"></div>
+        <div class="grid2" style="margin-top:18px;">
+          <div class="card">
+            <h3 class="section-title">Pipeline by Stage</h3>
+            <div class="bars" id="stageBars"></div>
+          </div>
+          <div class="card">
+            <h3 class="section-title">Demo Checklist</h3>
+            <div class="mini-list">
+              <div class="mini-item"><div><strong>1. Context-aware access</strong><div class="hint">Show allow vs deny before the app opens.</div></div><span class="badge">Login</span></div>
+              <div class="mini-item"><div><strong>2. Sensitive webpage controls</strong><div class="hint">Enable watermark during rehearsal.</div></div><span class="badge">URL visited</span></div>
+              <div class="mini-item"><div><strong>3. DLP action controls</strong><div class="hint">Trigger export, upload, print, and clipboard copy.</div></div><span class="badge">Actions</span></div>
+              <div class="mini-item"><div><strong>4. PII visual masking</strong><div class="hint">Only page-side simulation, not native CEP redaction.</div></div><span class="badge warn">UI simulation</span></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="view" id="view-contacts">
+        <div class="hero">
+          <div>
+            <h1>Contacts & Leads</h1>
+            <p>Open a contact to show detailed PII and related interactions.</p>
+          </div>
+        </div>
+        <div class="card">
+          <table>
+            <thead>
+              <tr>
+                <th>Subject Name</th>
+                <th>Email <span class="pii-tag">PII</span></th>
+                <th>NIK <span class="pii-tag">PII</span></th>
+                <th>NPWP <span class="pii-tag">PII</span></th>
+                <th>Company</th>
+              </tr>
+            </thead>
+            <tbody id="contactTable"></tbody>
+          </table>
+          <div class="pagination" id="pagination"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-pipeline">
+        <div class="hero">
+          <div>
+            <h1>Sales Pipeline</h1>
+            <p>Use table view for structured data and Kanban view for the executive story.</p>
+          </div>
+          <div class="pipeline-tools">
+            <button class="seg-btn active" type="button" data-pipeline-view="table">Table view</button>
+            <button class="seg-btn" type="button" data-pipeline-view="kanban">Kanban view</button>
+          </div>
+        </div>
+        <div class="card pipeline-panel active" id="pipelinePanelTable">
+          <table>
+            <thead>
+              <tr>
+                <th>Opportunity</th>
+                <th>Primary Contact <span class="pii-tag">PII</span></th>
+                <th>Value</th>
+                <th>Stage</th>
+              </tr>
+            </thead>
+            <tbody id="pipelineTable"></tbody>
+          </table>
+        </div>
+        <div class="card pipeline-panel" id="pipelinePanelKanban">
+          <div class="kanban-board" id="pipelineKanban"></div>
+        </div>
+      </section>
+
+      <section class="view" id="view-security">
+        <div class="hero">
+          <div>
+            <h1>Security Controls</h1>
+            <p>These buttons are designed to generate real browser actions for a managed Chrome demo.</p>
+          </div>
+        </div>
+        <div class="action-grid">
+          <div class="action-card">
+            <h3 class="section-title">Export CSV</h3>
+            <p class="hint">Triggers a real file download with sensitive rows.</p>
+            <button class="btn btn-primary" id="downloadBtn">Download CSV</button>
+          </div>
+          <div class="action-card">
+            <h3 class="section-title">Upload File</h3>
+            <p class="hint">Uses a real multipart upload POST for the DLP flow.</p>
+            <input type="file" id="uploadInput" style="margin-bottom:12px; width:100%;">
+            <button class="btn btn-primary" id="uploadBtn">Upload File</button>
+          </div>
+          <div class="action-card">
+            <h3 class="section-title">Print Report</h3>
+            <p class="hint">Builds a report and sends it to the browser print flow.</p>
+            <button class="btn btn-primary" id="printBtn">Print Report</button>
+          </div>
+          <div class="action-card">
+            <h3 class="section-title">Copy Bulk Text</h3>
+            <p class="hint">Copies a large sensitive payload to the clipboard.</p>
+            <button class="btn btn-primary" id="copyBtn">Copy Payload</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <div class="hero" style="margin-bottom:16px;">
+            <div>
+              <h3 class="section-title" style="margin-bottom:6px;">Clipboard rehearsal lab</h3>
+              <p class="hint" style="margin:0;">Highlight text below, then try right-click copy or <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">C</span>. Click in the destination box and try right-click paste or <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">V</span>.</p>
+            </div>
+          </div>
+          <div class="clipboard-grid">
+            <div class="stack">
+              <div class="hint"><strong>Selectable sensitive source</strong> — use this to simulate clipboard DLP on highlighted content.</div>
+              <div class="selectable-box mono" id="clipboardSource" tabindex="0"></div>
+            </div>
+            <div class="stack">
+              <div class="hint"><strong>Paste destination</strong> — monitored destination for keyboard and right-click paste flows.</div>
+              <textarea class="textarea mono" id="clipboardTarget" placeholder="Paste destination for the rehearsal..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:18px;">
+          <h3 class="section-title">Audit Activity Log</h3>
+          <div class="log-box" id="activityLog"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div class="drawer" id="drawer">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px; margin-bottom:18px;">
+      <div>
+        <div class="kicker">Contact profile</div>
+        <h2 id="drawerName" style="margin:8px 0 0; font-size:30px; letter-spacing:-0.03em;">-</h2>
+      </div>
+      <button class="btn btn-outline" id="closeDrawerBtn">Close</button>
+    </div>
+
+    <div class="pill-line">
+      <div class="pill-row"><strong>NIK</strong><span id="drawerNIK" class="pii-cell"></span></div>
+      <div class="pill-row"><strong>NPWP</strong><span id="drawerNPWP" class="pii-cell"></span></div>
+      <div class="pill-row"><strong>Email</strong><span id="drawerEmail" class="pii-cell"></span></div>
+      <div class="pill-row"><strong>Phone</strong><span id="drawerPhone" class="pii-cell"></span></div>
+    </div>
+
+    <div class="card" style="padding:18px; margin-bottom:18px;">
+      <h3 class="section-title">Stakeholders</h3>
+      <table>
+        <thead><tr><th>Name</th><th>Role</th><th>Contact <span class="pii-tag">PII</span></th></tr></thead>
+        <tbody id="stakeholderTable"></tbody>
+      </table>
+    </div>
+
+    <div class="card" style="padding:18px;">
+      <h3 class="section-title">Interaction History</h3>
+      <table>
+        <thead><tr><th>Date</th><th>Method</th><th>Summary</th></tr></thead>
+        <tbody id="historyTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="modal" id="messageModal">
+    <div class="modal-card" id="messageCard">
+      <div class="kicker" id="modalKicker">Decision</div>
+      <h2 id="modalTitle">Title</h2>
+      <p id="modalDesc">Description</p>
+      <ul class="reason-list" id="modalReasons"></ul>
+      <div class="row" style="margin-top:20px;">
+        <button class="btn btn-primary" id="modalOkBtn">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="context-menu" id="contextMenu"></div>
+  <div id="printArea" style="display:none;"></div>
+
+  <form id="realUploadForm" action="https://httpbin.org/post" method="post" enctype="multipart/form-data" target="_blank" style="display:none;">
+    <input type="file" name="file" id="uploadProxyInput">
+    <input type="hidden" name="company" value="BukanBankIndonesia">
+  </form>
+
+
+  <script>
+    const personas = {
+      trusted: {
+        label: 'Trusted employee on managed device',
+        deviceId: 'CBCM-BROWSER-MANAGED',
+        checks: [
+          ['Corporate identity', true, 'Signed in with approved Google Workspace account'],
+          ['Managed Chrome profile', true, 'Browser profile is managed'],
+          ['Approved device posture', true, 'Endpoint verification healthy'],
+          ['Allowed location', true, 'Request comes from allowed region / network'],
+          ['No policy conflicts', true, 'No high-risk policy state detected']
+        ]
+      },
+      unmanaged: {
+        label: 'Employee on unmanaged device',
+        deviceId: 'UNMANAGED-BROWSER',
+        checks: [
+          ['Corporate identity', true, 'Signed in with approved Google Workspace account'],
+          ['Managed Chrome profile', false, 'Profile is not managed by policy'],
+          ['Approved device posture', false, 'Endpoint verification missing'],
+          ['Allowed location', true, 'Location is allowed'],
+          ['No policy conflicts', true, 'No additional conflict detected']
+        ]
+      },
+      geoBlocked: {
+        label: 'Employee outside approved location',
+        deviceId: 'CBCM-BROWSER-MANAGED',
+        checks: [
+          ['Corporate identity', true, 'Signed in with approved Google Workspace account'],
+          ['Managed Chrome profile', true, 'Browser profile is managed'],
+          ['Approved device posture', true, 'Endpoint verification healthy'],
+          ['Allowed location', false, 'Request is outside approved geography / IP range'],
+          ['No policy conflicts', true, 'No additional conflict detected']
+        ]
+      },
+      policyConflict: {
+        label: 'Managed device with policy conflict',
+        deviceId: 'CBCM-BROWSER-MANAGED',
+        checks: [
+          ['Corporate identity', true, 'Signed in with approved Google Workspace account'],
+          ['Managed Chrome profile', true, 'Browser profile is managed'],
+          ['Approved device posture', false, 'Device posture flagged non-compliant'],
+          ['Allowed location', true, 'Location is allowed'],
+          ['No policy conflicts', false, 'Critical policy conflict found during evaluation']
+        ]
+      }
+    };
+
+    const companies = ['Telkom Indonesia', 'Pertamina', 'Gojek', 'Traveloka', 'Bank Mandiri', 'BCA', 'Indofood', 'PLN', 'Bio Farma'];
+    const firstNames = ['Budi', 'Siti', 'Andi', 'Rina', 'Dedi', 'Agus', 'Dewi', 'Eko', 'Maya', 'Hendra', 'Ahmad', 'Linda', 'Farhan', 'Siska', 'Bambang'];
+    const lastNames = ['Santoso', 'Aminah', 'Pratama', 'Wijaya', 'Putri', 'Kurniawan', 'Lestari', 'Hidayat', 'Sari', 'Gunawan', 'Siregar', 'Mulyadi'];
+    const interactionMethods = ['Official Email', 'Zoom Video Call', 'Onsite Meeting', 'WhatsApp Business', 'Direct Office Call'];
+    const interactionActivities = [
+      'Audit Kepatuhan UU PDP - Compliant',
+      'Technical Review Session - Requirement Confirmed',
+      'Price Negotiation - Pending Approval',
+      'Support Ticket Resolution - Resolved',
+      'Executive Discussion - Follow-up Needed',
+      'NDA Confirmation - Completed'
+    ];
+
+    let database = [];
+    let currentPage = 1;
+    let currentView = 'dashboard';
+    let currentPipelineView = 'table';
+    let selectedIndex = 0;
+    let searchTerm = '';
+    let browserSimulation = false;
+    let simulatedClipboard = '';
+    let contextMenuState = null;
+    let currentIdentity = 'se.admin@bukanbankindo.co.id';
+    let currentDeviceId = 'CBCM-BROWSER-MANAGED';
+    let accessSessionUTC = new Date().toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, ' UTC');
+
+    function randPhone(seed) {
+      return '+62 812-' + String(10000000 + seed * 7919).slice(0,8);
+    }
+
+    function buildDatabase() {
+      database = [];
+      for (let i = 0; i < 100; i++) {
+        const first = firstNames[i % firstNames.length];
+        const last = lastNames[(i * 3) % lastNames.length];
+        const name = `${first} ${last}`;
+        const company = companies[i % companies.length];
+        const stageList = ['Prospecting', 'Qualified', 'Proposal', 'Negotiation', 'Closed Won'];
+        const stage = stageList[i % stageList.length];
+        const valueM = 75 + ((i * 17) % 840);
+        const email = `${first.toLowerCase()}.${last.toLowerCase()}@${company.toLowerCase().replace(/\s+/g,'')}.co.id`;
+        const nik = '3174' + String(100000000000 + i * 9283).padStart(12, '0');
+        const npwp = `01.${String(100 + (i*7)%900)}.${String(100 + (i*11)%900)}.8-012.000`;
+        const phone = randPhone(i + 10);
+        const subs = Array.from({length:3}, (_, idx) => ({
+          name: `${firstNames[(i+idx+2)%firstNames.length]} ${lastNames[(i+idx+5)%lastNames.length]}`,
+          role: idx === 0 ? 'Finance Manager' : idx === 1 ? 'Procurement Lead' : 'Operations Manager',
+          contact: randPhone(i * 3 + idx + 20)
+        }));
+        const history = Array.from({length:5}, (_, idx) => ({
+          date: `2026-${String(4 - Math.floor(idx/2)).padStart(2,'0')}-${String(10 + idx*3).padStart(2,'0')}`,
+          method: interactionMethods[(i + idx) % interactionMethods.length],
+          summary: interactionActivities[(i + idx) % interactionActivities.length]
+        }));
+        database.push({ name, company, email, nik, npwp, phone, stage, value: `Rp ${valueM}M`, subs, history });
+      }
+    }
+
+    function escapeHTML(value) {
+      return String(value)
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function piiHTML(value) {
+      const safe = escapeHTML(value);
+      const display = browserSimulation ? '************' : safe;
+      const cls = browserSimulation ? 'masked' : '';
+      return `<span class="pii-cell ${cls}" data-full="${safe}" onmouseenter="revealPII(event)" onmouseleave="hidePII(event)">${display}</span>`;
+    }
+
+    function revealPII(e) {
+      if (!browserSimulation) return;
+      e.currentTarget.textContent = e.currentTarget.dataset.full;
+    }
+
+    function hidePII(e) {
+      if (!browserSimulation) return;
+      e.currentTarget.textContent = '************';
+    }
+
+    function addLog(action, outcome, detail) {
+      const box = document.getElementById('activityLog');
+      const stamp = new Date().toLocaleString('en-GB');
+      const row = document.createElement('div');
+      row.className = 'log-item';
+      row.innerHTML = `<strong>${action}</strong> — ${outcome}<br><span class="hint">${stamp} • ${escapeHTML(detail)}</span>`;
+      box.prepend(row);
+    }
+
+    function showModal(type, title, desc, reasons = []) {
+      const modal = document.getElementById('messageModal');
+      const card = document.getElementById('messageCard');
+      document.getElementById('modalKicker').textContent = type === 'blocked' ? 'Blocked action' : type === 'allowed' ? 'Allowed action' : 'Access decision';
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDesc').textContent = desc;
+      card.className = 'modal-card ' + (type === 'blocked' ? 'blocked' : 'allowed');
+      const reasonList = document.getElementById('modalReasons');
+      reasonList.innerHTML = reasons.map(r => `<li>${escapeHTML(r)}</li>`).join('');
+      reasonList.style.display = reasons.length ? 'block' : 'none';
+      modal.style.display = 'grid';
+    }
+
+    function closeModal() {
+      document.getElementById('messageModal').style.display = 'none';
+    }
+
+    function getSelectedPersona() {
+      return personas[document.getElementById('personaSelect').value];
+    }
+
+    function refreshAccessMeta() {
+      const persona = getSelectedPersona();
+      currentIdentity = (document.getElementById('identityInput').value || 'se.admin@bukanbankindo.co.id').trim();
+      currentDeviceId = persona.deviceId;
+      accessSessionUTC = new Date().toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, ' UTC');
+      renderWatermark();
+    }
+
+    function updateCriteriaPreview() {
+      const persona = getSelectedPersona();
+      const container = document.getElementById('criteriaPreview');
+      container.innerHTML = persona.checks.map(([label, pass, note]) => `
+        <div class="criteria-row ${pass ? 'pass' : 'fail'}">
+          <div><strong>${label}</strong><div style="margin-top:4px; color:#cbd5e1; font-size:13px;">${note}</div></div>
+          <div class="${pass ? 'status-pass' : 'status-fail'}">${pass ? 'PASS' : 'FAIL'}</div>
+        </div>`).join('');
+      refreshAccessMeta();
+    }
+
+    function signInFlow() {
+      const simulateCAA = document.getElementById('simulateCAA').checked;
+      browserSimulation = document.getElementById('browserDecisionPrecheck').checked;
+      document.getElementById('browserDecisionToggle').checked = browserSimulation;
+      refreshAccessMeta();
+      applyBrowserSimulation();
+
+      if (!simulateCAA) {
+        document.getElementById('loginOverlay').style.display = 'none';
+        addLog('Login', 'Allowed', 'Context-aware access simulation disabled');
+        return;
+      }
+
+      const persona = getSelectedPersona();
+      const failed = persona.checks.filter(c => !c[1]).map(c => `${c[0]}: ${c[2]}`);
+
+      if (failed.length) {
+        showModal('blocked', 'Access denied by context-aware policy', `Preset: ${persona.label}`, failed);
+        addLog('Context-aware access', 'Denied', persona.label);
+        document.getElementById('modalOkBtn').onclick = () => {
+          closeModal();
+          document.getElementById('modalOkBtn').onclick = closeModal;
+        };
+        return;
+      }
+
+      document.getElementById('loginOverlay').style.display = 'none';
+      addLog('Context-aware access', 'Allowed', `${persona.label} • ${currentIdentity}`);
+      addLog('Login', 'Allowed', 'All context checks passed');
+    }
+
+    function stageClass(stage) {
+      return {
+        'Prospecting': 'stage-prospecting',
+        'Qualified': 'stage-qualified',
+        'Proposal': 'stage-proposal',
+        'Negotiation': 'stage-negotiation',
+        'Closed Won': 'stage-won'
+      }[stage] || 'stage-prospecting';
+    }
+
+    function methodClass(method) {
+      if (method.includes('Email')) return 'method-email';
+      if (method.includes('Call')) return 'method-call';
+      if (method.includes('Meeting')) return 'method-meeting';
+      return 'method-wa';
+    }
+
+    function applyBrowserSimulation() {
+      browserSimulation = document.getElementById('browserDecisionToggle').checked;
+      document.getElementById('modeBadge').textContent = browserSimulation ? 'Mode: Rehearsal simulation' : 'Mode: Real demo';
+      document.getElementById('modeBadge').className = 'badge ' + (browserSimulation ? 'warn' : 'good');
+      renderContacts();
+      renderPipeline();
+      buildClipboardSource();
+      if (document.getElementById('drawer').classList.contains('open')) openDrawer(selectedIndex);
+    }
+
+    function applyWatermark() {
+      const on = document.getElementById('watermarkToggle').checked;
+      document.body.classList.toggle('watermark-on', on);
+      document.getElementById('watermarkLayer').classList.toggle('active', on);
+      renderWatermark();
+    }
+
+    function renderWatermark() {
+      const layer = document.getElementById('watermarkLayer');
+      if (!layer) return;
+      if (!document.getElementById('watermarkToggle').checked) {
+        layer.innerHTML = '';
+        return;
+      }
+
+      const customText = 'CONFIDENTIAL';
+      const text = `${customText} • ${currentIdentity.toUpperCase()} • ${currentDeviceId} • ${accessSessionUTC}`;
+      const tiles = [];
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      const colStep = 360;
+      const rowStep = 220;
+
+      for (let y = -120; y < height + 200; y += rowStep) {
+        for (let x = -200; x < width + 300; x += colStep) {
+          tiles.push(`<div class="watermark-tile" style="left:${x + ((y / rowStep) % 2 ? 90 : 0)}px; top:${y}px;">${escapeHTML(text)}</div>`);
+        }
+      }
+      layer.innerHTML = tiles.join('');
+    }
+
+    function renderStats() {
+      const totalValue = database.reduce((sum, item) => sum + parseInt(item.value.replace(/[^0-9]/g,''), 10), 0);
+      const won = database.filter(d => d.stage === 'Closed Won').length;
+      const piiFields = database.length * 4;
+      const grid = document.getElementById('statsGrid');
+      grid.innerHTML = `
+        <div class="card"><div class="stat-title">Pipeline Value</div><div class="stat-value">Rp ${totalValue.toLocaleString()}M</div></div>
+        <div class="card"><div class="stat-title">Subject Records</div><div class="stat-value">${database.length}</div></div>
+        <div class="card"><div class="stat-title">Sensitive Fields in View</div><div class="stat-value">${piiFields}</div></div>
+        <div class="card"><div class="stat-title">Closed Won</div><div class="stat-value">${won}</div></div>`;
+
+      const stageCounts = ['Prospecting','Qualified','Proposal','Negotiation','Closed Won'].map(stage => ({ stage, count: database.filter(d => d.stage === stage).length }));
+      const max = Math.max(...stageCounts.map(s => s.count));
+      document.getElementById('stageBars').innerHTML = stageCounts.map(s => `
+        <div class="bar-row">
+          <div>${s.stage}</div>
+          <div class="track"><div class="fill" style="width:${(s.count/max)*100}%"></div></div>
+          <div style="text-align:right; font-weight:800;">${s.count}</div>
+        </div>`).join('');
+    }
+
+    function filteredData() {
+      const q = searchTerm.toLowerCase().trim();
+      if (!q) return database;
+      return database.filter(d => [d.name, d.email, d.nik, d.npwp, d.company].some(v => String(v).toLowerCase().includes(q)));
+    }
+
+    function renderContacts() {
+      const rows = filteredData();
+      const table = document.getElementById('contactTable');
+      const start = (currentPage - 1) * 10;
+      const pageRows = rows.slice(start, start + 10);
+      table.innerHTML = pageRows.map(d => {
+        const idx = database.indexOf(d);
+        return `<tr class="clickable" onclick="openDrawer(${idx})">
+          <td><strong>${escapeHTML(d.name)}</strong></td>
+          <td>${piiHTML(d.email)}</td>
+          <td>${piiHTML(d.nik)}</td>
+          <td>${piiHTML(d.npwp)}</td>
+          <td>${escapeHTML(d.company)}</td>
+        </tr>`;
+      }).join('');
+      renderPagination(rows.length);
+    }
+
+    function renderPagination(total) {
+      const pages = Math.max(1, Math.ceil(total / 10));
+      const holder = document.getElementById('pagination');
+      const wanted = new Set([1, 2, currentPage - 1, currentPage, currentPage + 1, pages - 1, pages]);
+      const nums = [...wanted].filter(n => n >= 1 && n <= pages).sort((a,b)=>a-b);
+      let html = '';
+      let prev = 0;
+      nums.forEach(n => {
+        if (prev && n - prev > 1) html += `<span style="padding:8px 4px; color:var(--soft);">...</span>`;
+        html += `<button class="page-btn ${n===currentPage?'active':''}" onclick="goPage(${n})">${n}</button>`;
+        prev = n;
+      });
+      holder.innerHTML = html;
+    }
+
+    function goPage(page) {
+      currentPage = page;
+      renderContacts();
+    }
+
+    function renderPipeline() {
+      const rows = database.slice(0, 25);
+      const table = document.getElementById('pipelineTable');
+      table.innerHTML = rows.map(d => `
+        <tr>
+          <td><strong>${escapeHTML('Opportunity ' + d.company)}</strong></td>
+          <td>${piiHTML(d.email)}</td>
+          <td>${escapeHTML(d.value)}</td>
+          <td><span class="stage-pill ${stageClass(d.stage)}">${escapeHTML(d.stage)}</span></td>
+        </tr>`).join('');
+
+      const stages = ['Prospecting', 'Qualified', 'Proposal', 'Negotiation', 'Closed Won'];
+      const board = document.getElementById('pipelineKanban');
+      board.innerHTML = stages.map(stage => {
+        const cards = rows.filter(d => d.stage === stage);
+        return `
+          <div class="kanban-col">
+            <div class="kanban-head">
+              <span class="stage-pill ${stageClass(stage)}">${escapeHTML(stage)}</span>
+              <span class="kanban-count">${cards.length}</span>
+            </div>
+            <div class="kanban-stack">
+              ${cards.map(d => `
+                <div class="kanban-card">
+                  <div class="kanban-card-title">${escapeHTML('Opportunity ' + d.company)}</div>
+                  <div class="kanban-meta">
+                    <div><strong>Primary contact:</strong> ${piiHTML(d.email)}</div>
+                    <div><strong>Value:</strong> ${escapeHTML(d.value)}</div>
+                  </div>
+                </div>`).join('')}
+              ${cards.length ? '' : '<div class="hint">No opportunities in this stage.</div>'}
+            </div>
+          </div>`;
+      }).join('');
+
+      document.querySelectorAll('[data-pipeline-view]').forEach(btn => btn.classList.toggle('active', btn.dataset.pipelineView === currentPipelineView));
+      document.getElementById('pipelinePanelTable').classList.toggle('active', currentPipelineView === 'table');
+      document.getElementById('pipelinePanelKanban').classList.toggle('active', currentPipelineView === 'kanban');
+    }
+
+    function openDrawer(index) {
+      selectedIndex = index;
+      const d = database[index];
+      document.getElementById('drawerName').textContent = d.name;
+      document.getElementById('drawerNIK').innerHTML = piiHTML(d.nik);
+      document.getElementById('drawerNPWP').innerHTML = piiHTML(d.npwp);
+      document.getElementById('drawerEmail').innerHTML = piiHTML(d.email);
+      document.getElementById('drawerPhone').innerHTML = piiHTML(d.phone);
+      document.getElementById('stakeholderTable').innerHTML = d.subs.map(s => `<tr><td>${escapeHTML(s.name)}</td><td>${escapeHTML(s.role)}</td><td>${piiHTML(s.contact)}</td></tr>`).join('');
+      document.getElementById('historyTable').innerHTML = d.history.map(h => `
+        <tr>
+          <td>${escapeHTML(h.date)}</td>
+          <td><span class="method-pill ${methodClass(h.method)}">${escapeHTML(h.method)}</span></td>
+          <td>${escapeHTML(h.summary)}</td>
+        </tr>`).join('');
+      document.getElementById('overlay').style.display = 'block';
+      document.getElementById('drawer').classList.add('open');
+    }
+
+    function closeDrawer() {
+      document.getElementById('drawer').classList.remove('open');
+      document.getElementById('overlay').style.display = 'none';
+    }
+
+    function switchView(view) {
+      currentView = view;
+      document.querySelectorAll('.nav-item').forEach(item => item.classList.toggle('active', item.dataset.view === view));
+      document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+      document.getElementById(`view-${view}`).classList.add('active');
+      if (view === 'contacts') renderContacts();
+      if (view === 'pipeline') renderPipeline();
+    }
+
+    function blockedAction(actionName, detail) {
+      showModal('blocked', `${actionName} blocked`, 'Simulated browser enforcement blocked this action because sensitive content was detected.', [detail, 'Use this mode only for rehearsal. Turn the simulation off for a real managed-Chrome demo.']);
+      addLog(actionName, 'Blocked', detail);
+    }
+
+    function buildCsv() {
+      const header = 'Name,Email,NIK,NPWP,Phone,Company,Value,Stage\n';
+      const lines = database.map(d => `"${d.name}","${d.email}","${d.nik}","${d.npwp}","${d.phone}","${d.company}","${d.value}","${d.stage}"`).join('\n');
+      return header + lines;
+    }
+
+    function downloadCsv() {
+      if (browserSimulation) return blockedAction('Download', 'Sensitive fields matched DLP policy during CSV export.');
+      const blob = new Blob([buildCsv()], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `cep_demo_export_${Date.now()}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      addLog('Download', 'Allowed', 'CSV export was initiated');
+      showModal('allowed', 'Download started', 'The browser received a real download request from the page.');
+    }
+
+    function uploadFile() {
+      const input = document.getElementById('uploadInput');
+      if (!input.files.length) {
+        showModal('decision', 'No file selected', 'Choose a file first so the page can trigger a real upload flow.');
+        return;
+      }
+      if (browserSimulation) return blockedAction('Upload', `Selected file: ${input.files[0].name}`);
+      const proxy = document.getElementById('uploadProxyInput');
+      const dt = new DataTransfer();
+      dt.items.add(input.files[0]);
+      proxy.files = dt.files;
+      document.getElementById('realUploadForm').submit();
+      addLog('Upload', 'Allowed', `Upload POST submitted for ${input.files[0].name}`);
+      showModal('allowed', 'Upload submitted', 'The page submitted a real multipart upload request in a new tab.');
+    }
+
+    function buildPrintHTML() {
+      const top = database.slice(0, 25).map(d => `<tr><td>${escapeHTML(d.name)}</td><td>${escapeHTML(d.email)}</td><td>${escapeHTML(d.nik)}</td><td>${escapeHTML(d.npwp)}</td><td>${escapeHTML(d.company)}</td></tr>`).join('');
+      return `<!DOCTYPE html><html><head><title>CEP Print Report</title><style>body{font-family:Arial,sans-serif;padding:30px}table{width:100%;border-collapse:collapse}th,td{border:1px solid #ccc;padding:8px;font-size:12px;text-align:left}h1{margin:0 0 10px}</style></head><body><h1>PII Audit Report</h1><p>Generated for Chrome Enterprise Premium printing demo.</p><table><thead><tr><th>Name</th><th>Email</th><th>NIK</th><th>NPWP</th><th>Company</th></tr></thead><tbody>${top}</tbody></table></body></html>`;
+    }
+
+    function printReport() {
+      if (browserSimulation) return blockedAction('Print', 'Sensitive content detected in the print job.');
+      const w = window.open('', '_blank');
+      if (!w) {
+        showModal('decision', 'Popup blocked', 'Allow popups temporarily so the print window can open.');
+        return;
+      }
+      w.document.write(buildPrintHTML());
+      w.document.close();
+      w.focus();
+      w.print();
+      addLog('Print', 'Allowed', 'Print dialog opened');
+    }
+
+    async function copyPayload() {
+      const payload = database.slice(0, 12).map(d => `${d.name} | ${d.email} | ${d.nik} | ${d.npwp}`).join('\n');
+      return handleCopy(payload, 'bulk copy button');
+    }
+
+    function buildClipboardSource() {
+      const source = document.getElementById('clipboardSource');
+      if (!source) return;
+      const text = [
+        `Prepared for: ${currentIdentity}`,
+        'Customer sample:',
+        ...database.slice(0, 6).map((d, i) => `${i + 1}. ${d.name} | ${d.email} | ${d.nik} | ${d.npwp} | ${d.phone}`)
+      ].join('\n');
+      source.textContent = browserSimulation ? text : text;
+    }
+
+    function getSourceSelectionText() {
+      const selection = window.getSelection();
+      if (!selection || selection.rangeCount === 0 || selection.isCollapsed) return '';
+      const range = selection.getRangeAt(0);
+      const source = document.getElementById('clipboardSource');
+      if (!source.contains(range.commonAncestorContainer)) return '';
+      return selection.toString();
+    }
+
+    async function writeClipboardText(text) {
+      simulatedClipboard = text;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        try {
+          await navigator.clipboard.writeText(text);
+        } catch (_) { }
+      }
+    }
+
+    async function readClipboardText() {
+      if (navigator.clipboard && navigator.clipboard.readText) {
+        try {
+          const text = await navigator.clipboard.readText();
+          if (text) {
+            simulatedClipboard = text;
+            return text;
+          }
+        } catch (_) { }
+      }
+      return simulatedClipboard;
+    }
+
+    async function handleCopy(text, methodLabel) {
+      if (!text) {
+        showModal('decision', 'No text selected', 'Highlight some text first, or use the bulk copy button.');
+        return;
+      }
+      if (browserSimulation) return blockedAction('Copy', `Sensitive text matched clipboard DLP policy via ${methodLabel}.`);
+      await writeClipboardText(text);
+      addLog('Copy', 'Allowed', `Clipboard write via ${methodLabel}`);
+      showModal('allowed', 'Clipboard write complete', `Sensitive text was copied via ${methodLabel}.`);
+    }
+
+    async function handlePaste(methodLabel) {
+      if (browserSimulation) return blockedAction('Paste', `Sensitive text entry matched clipboard DLP policy via ${methodLabel}.`);
+      const target = document.getElementById('clipboardTarget');
+      const text = await readClipboardText();
+      if (!text) {
+        showModal('decision', 'Clipboard empty', 'No clipboard text is available yet. Copy something first.');
+        return;
+      }
+      const prefix = target.value ? '\n' : '';
+      target.value += prefix + text;
+      addLog('Paste', 'Allowed', `Clipboard read via ${methodLabel}`);
+      showModal('allowed', 'Paste completed', `Sensitive text was pasted via ${methodLabel}.`);
+    }
+
+    function hideContextMenu() {
+      const menu = document.getElementById('contextMenu');
+      menu.style.display = 'none';
+      contextMenuState = null;
+    }
+
+    function showContextMenu(x, y, items) {
+      const menu = document.getElementById('contextMenu');
+      menu.innerHTML = items.map((item, idx) => `<button type="button" data-menu-idx="${idx}">${item.label}</button>`).join('');
+      menu.style.left = `${x}px`;
+      menu.style.top = `${y}px`;
+      menu.style.display = 'block';
+      contextMenuState = { items };
+
+      menu.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const action = contextMenuState.items[Number(btn.dataset.menuIdx)];
+          hideContextMenu();
+          await action.onClick();
+        });
+      });
+    }
+
+    function bindClipboardContextMenu() {
+      const source = document.getElementById('clipboardSource');
+      const target = document.getElementById('clipboardTarget');
+
+      source.addEventListener('contextmenu', (event) => {
+        const selected = getSourceSelectionText();
+        if (!selected) return;
+        event.preventDefault();
+        showContextMenu(event.clientX, event.clientY, [
+          { label: 'Copy selected text', onClick: () => handleCopy(selected, 'right-click menu') },
+          { label: 'Copy full sensitive block', onClick: () => handleCopy(source.textContent, 'right-click menu') }
+        ]);
+      });
+
+      target.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+        showContextMenu(event.clientX, event.clientY, [
+          { label: 'Paste from clipboard', onClick: () => handlePaste('right-click menu') }
+        ]);
+      });
+
+      source.addEventListener('keydown', async (event) => {
+        const mod = event.ctrlKey || event.metaKey;
+        if (mod && event.key.toLowerCase() === 'c') {
+          const selected = getSourceSelectionText();
+          if (!selected) return;
+          event.preventDefault();
+          await handleCopy(selected, 'keyboard shortcut');
+        }
+      });
+
+      target.addEventListener('keydown', async (event) => {
+        const mod = event.ctrlKey || event.metaKey;
+        if (mod && event.key.toLowerCase() === 'v') {
+          event.preventDefault();
+          await handlePaste('keyboard shortcut');
+        }
+      });
+
+      document.addEventListener('click', (event) => {
+        const menu = document.getElementById('contextMenu');
+        if (!menu.contains(event.target)) hideContextMenu();
+      });
+
+      window.addEventListener('scroll', hideContextMenu, true);
+    }
+
+    function bindPipelineViewToggle() {
+      document.querySelectorAll('[data-pipeline-view]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          currentPipelineView = btn.dataset.pipelineView;
+          renderPipeline();
+        });
+      });
+    }
+
+    function bindEvents() {
+      document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => switchView(item.dataset.view)));
+      document.getElementById('personaSelect').addEventListener('change', updateCriteriaPreview);
+      document.getElementById('identityInput').addEventListener('input', refreshAccessMeta);
+      document.getElementById('signInBtn').addEventListener('click', signInFlow);
+      document.getElementById('browserDecisionToggle').addEventListener('change', applyBrowserSimulation);
+      document.getElementById('watermarkToggle').addEventListener('change', applyWatermark);
+      document.getElementById('searchInput').addEventListener('input', e => { searchTerm = e.target.value; currentPage = 1; renderContacts(); renderPipeline(); });
+      document.getElementById('downloadBtn').addEventListener('click', downloadCsv);
+      document.getElementById('uploadBtn').addEventListener('click', uploadFile);
+      document.getElementById('printBtn').addEventListener('click', printReport);
+      document.getElementById('copyBtn').addEventListener('click', copyPayload);
+      document.getElementById('closeDrawerBtn').addEventListener('click', closeDrawer);
+      document.getElementById('overlay').addEventListener('click', closeDrawer);
+      document.getElementById('modalOkBtn').addEventListener('click', closeModal);
+      window.addEventListener('resize', renderWatermark);
+      bindPipelineViewToggle();
+      bindClipboardContextMenu();
+    }
+
+    buildDatabase();
+    bindEvents();
+    updateCriteriaPreview();
+    renderStats();
+    renderContacts();
+    renderPipeline();
+    buildClipboardSource();
+    applyWatermark();
+    addLog('Page ready', 'Info', 'Demo page initialized');
+  </script>
+
+</body>
+</html>
