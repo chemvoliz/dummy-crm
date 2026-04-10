@@ -46,13 +46,14 @@
       position: absolute;
       transform: rotate(-24deg);
       transform-origin: center;
-      color: rgba(220, 38, 38, 0.10);
-      font-size: 20px;
-      letter-spacing: 0.08em;
-      font-weight: 700;
+      color: rgba(220, 38, 38, 0.18);
+      font-size: 24px;
+      letter-spacing: 0.12em;
+      font-weight: 800;
       white-space: nowrap;
       text-transform: uppercase;
       user-select: none;
+      text-shadow: 0 0 1px rgba(255,255,255,0.12);
     }
     nav {
       width: 280px;
@@ -272,6 +273,104 @@
     .criteria-row.fail { border-color: rgba(239,68,68,0.35); }
     .status-pass { color: #34d399; font-weight: 800; }
     .status-fail { color: #fca5a5; font-weight: 800; }
+    .policy-card {
+      margin-top: 18px;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 18px;
+      background: rgba(255,255,255,0.05);
+      padding: 16px;
+    }
+    .policy-head {
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom: 10px;
+    }
+    .policy-chip-wrap, .choice-row {
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+    .policy-chip {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:8px 12px;
+      border-radius:999px;
+      background: rgba(255,255,255,0.08);
+      border:1px solid rgba(255,255,255,0.12);
+      color:#e2e8f0;
+      font-size:12px;
+      font-weight:700;
+    }
+    .sub-kicker {
+      margin-top: 18px;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #93c5fd;
+    }
+    .layer-card {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 16px;
+      background: #fbfdff;
+      margin-bottom: 14px;
+    }
+    .layer-title {
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      margin-bottom: 8px;
+    }
+    .info-panel {
+      border: 1px solid #dbeafe;
+      background: #eff6ff;
+      color: #1e3a8a;
+      border-radius: 16px;
+      padding: 12px 14px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .choice-stack { display:grid; gap: 12px; margin-top: 14px; }
+    .choice-item { display:grid; gap: 8px; }
+    .choice-label { font-size: 13px; font-weight: 800; color: var(--text); }
+    .choice-btn {
+      border: 1px solid var(--line);
+      background: white;
+      border-radius: 999px;
+      padding: 10px 14px;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .choice-btn:hover { border-color: #93c5fd; background: #f8fbff; }
+    .choice-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+    .decision-strip {
+      border-radius: 18px;
+      padding: 14px 16px;
+      font-size: 13px;
+      line-height: 1.65;
+      border: 1px solid var(--line);
+      background: white;
+    }
+    .decision-strip.good {
+      background: #ecfdf5;
+      border-color: #a7f3d0;
+      color: #166534;
+    }
+    .decision-strip.bad {
+      background: #fef2f2;
+      border-color: #fecaca;
+      color: #991b1b;
+    }
     .modal {
       inset: 0; display: none; place-items: center; z-index: 60; padding: 24px;
     }
@@ -413,30 +512,6 @@
       font-weight: 800;
     }
     .stack { display:grid; gap: 10px; }
-    .explain-card {
-      border: 1px solid var(--line);
-      border-radius: 16px;
-      background: #f8fafc;
-      padding: 14px;
-      color: var(--text);
-    }
-    .decision-banner {
-      margin-top: 18px;
-      border-radius: 16px;
-      padding: 14px 16px;
-      font-weight: 700;
-      line-height: 1.5;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.05);
-    }
-    .decision-banner.allow {
-      border-color: rgba(16,185,129,0.35);
-      color: #d1fae5;
-    }
-    .decision-banner.block {
-      border-color: rgba(239,68,68,0.35);
-      color: #fecaca;
-    }
 
     @media (max-width: 1100px) {
       .grid4, .grid3, .grid2, .action-grid, .login-card { grid-template-columns: 1fr; }
@@ -454,32 +529,106 @@
       <div class="login-pane dark">
         <div class="kicker" style="color:#93c5fd;">Rehearsal entry point</div>
         <h1 style="margin:10px 0 8px; font-size:34px; letter-spacing:-0.04em;">Chrome Enterprise Premium access check</h1>
-        <p style="margin:0; color:#cbd5e1; line-height:1.65;">Use this screen to rehearse Context-Aware Access before the CRM opens. In the real environment, Chrome Enterprise Premium evaluates user and device context outside the application itself.</p>
+        <p style="margin:0; color:#cbd5e1; line-height:1.65;">Layer 1 defines the policy. Layer 2 simulates the current session. The CRM opens only when the current session satisfies every required condition.</p>
+
+        <div class="policy-card">
+          <div class="policy-head">
+            <div>
+              <div class="kicker" style="color:#bfdbfe;">Layer 1 · Required access policy</div>
+              <div id="policyName" style="font-size:22px; font-weight:800; margin-top:8px;">Indonesia sales CRM</div>
+            </div>
+            <div class="badge good" id="decisionBadge">Access will be granted</div>
+          </div>
+          <div id="policySummaryText" style="color:#cbd5e1; font-size:14px; line-height:1.7;"></div>
+          <div class="policy-chip-wrap" id="requirementChips" style="margin-top:14px;"></div>
+        </div>
+
+        <div class="sub-kicker">Policy vs current session</div>
         <div class="criteria" id="criteriaPreview"></div>
-        <div class="decision-banner allow" id="decisionSummary"></div>
       </div>
       <div class="login-pane">
         <div class="kicker">Demo controls</div>
-        <h2 style="margin:10px 0 6px; font-size:28px; letter-spacing:-0.03em;">Choose your scenario</h2>
-        <p class="hint" style="margin-bottom:20px;">Use one preset for rehearsal. For a real demo, turn off both simulation toggles after sign-in.</p>
+        <h2 style="margin:10px 0 6px; font-size:28px; letter-spacing:-0.03em;">Choose policy and current context</h2>
+        <p class="hint" style="margin-bottom:20px;">Keep the clean preset-first story for business users, then open Layer 2 to show exactly which condition causes the sign-in to pass or fail.</p>
 
-        <div class="field-row">
-          <label for="personaSelect"><strong>Access preset</strong></label>
-          <select id="personaSelect" class="select">
-            <option value="trusted">Trusted employee on managed Chrome + healthy device</option>
-            <option value="personalApproved">Personal laptop in approved location</option>
-            <option value="geoBlocked">Managed Chrome outside approved location</option>
-            <option value="policyConflict">Managed Chrome with device or policy conflict</option>
-          </select>
-          <div class="explain-card" id="personaHelp"></div>
+        <div class="layer-card">
+          <div class="layer-title">Layer 1 · Access policy preset</div>
+          <div class="field-row" style="margin-bottom:10px;">
+            <label for="policySelect"><strong>Policy preset</strong></label>
+            <select id="policySelect" class="select">
+              <option value="indonesiaSales">Indonesia sales CRM</option>
+              <option value="japanExec">Japan executive workspace</option>
+              <option value="regionalSupport">Regional support portal</option>
+            </select>
+          </div>
+          <div class="info-panel" id="policyHelp"></div>
+          <div class="row" style="margin-top:12px;">
+            <button class="btn btn-outline" id="loadPresetContextBtn" type="button">Load policy-matching context</button>
+          </div>
         </div>
 
-        <div class="field-row">
-          <label for="identityInput"><strong>Simulated signed-in account</strong></label>
-          <input id="identityInput" class="select" type="email" value="se.admin@bukanbankindo.co.id">
+        <div class="layer-card">
+          <div class="layer-title">Layer 2 · Current session context</div>
+          <div class="field-row">
+            <label for="identityInput"><strong>Signed-in account</strong></label>
+            <input id="identityInput" class="select" type="email" value="se.admin@bukanbankindo.co.id">
+          </div>
+          <div class="choice-stack">
+            <div class="choice-item">
+              <div class="choice-label">Device status</div>
+              <div class="choice-row" data-choice-group="deviceStatus">
+                <button class="choice-btn" type="button" data-choice-value="personal">Personal laptop</button>
+                <button class="choice-btn" type="button" data-choice-value="unmanaged_company">Unmanaged company laptop</button>
+                <button class="choice-btn" type="button" data-choice-value="managed_company">Managed company laptop</button>
+              </div>
+            </div>
+            <div class="choice-item">
+              <div class="choice-label">Device posture</div>
+              <div class="choice-row" data-choice-group="devicePosture">
+                <button class="choice-btn" type="button" data-choice-value="healthy">Healthy / latest OS</button>
+                <button class="choice-btn" type="button" data-choice-value="old_os">Old OS version</button>
+                <button class="choice-btn" type="button" data-choice-value="missing_ev">Missing Endpoint Verification</button>
+              </div>
+            </div>
+            <div class="choice-item">
+              <div class="choice-label">Location</div>
+              <div class="choice-row" data-choice-group="location">
+                <button class="choice-btn" type="button" data-choice-value="Indonesia">Indonesia</button>
+                <button class="choice-btn" type="button" data-choice-value="USA">USA</button>
+                <button class="choice-btn" type="button" data-choice-value="Japan">Japan</button>
+              </div>
+            </div>
+            <div class="choice-item">
+              <div class="choice-label">Chrome browser management</div>
+              <div class="choice-row" data-choice-group="browserManagement">
+                <button class="choice-btn" type="button" data-choice-value="unmanaged">Unmanaged Chrome profile</button>
+                <button class="choice-btn" type="button" data-choice-value="managed">Managed Chrome profile</button>
+              </div>
+            </div>
+            <div class="choice-item">
+              <div class="choice-label">Chrome version</div>
+              <div class="choice-row" data-choice-group="chromeVersion">
+                <button class="choice-btn" type="button" data-choice-value="144">Chrome 144</button>
+                <button class="choice-btn" type="button" data-choice-value="145">Chrome 145</button>
+                <button class="choice-btn" type="button" data-choice-value="146">Chrome 146</button>
+                <button class="choice-btn" type="button" data-choice-value="147">Chrome 147</button>
+              </div>
+            </div>
+            <div class="choice-item">
+              <div class="choice-label">Policy conflict state</div>
+              <div class="choice-row" data-choice-group="policyConflict">
+                <button class="choice-btn" type="button" data-choice-value="none">No policy conflict</button>
+                <button class="choice-btn" type="button" data-choice-value="critical">Critical policy conflict</button>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="field-row">
+        <div class="decision-strip good" id="currentSessionSummary">
+          Current result: access will be granted.
+        </div>
+
+        <div class="field-row" style="margin-top:14px;">
           <div class="toggle-card" style="padding:12px 14px;">
             <label class="switch"><input type="checkbox" id="simulateCAA" checked><span class="slider"></span></label>
             <div>
@@ -500,9 +649,9 @@
         </div>
 
         <div class="row" style="margin-top:22px;">
-          <button class="btn btn-primary" id="signInBtn" type="button">Sign in with Google</button>
+          <button class="btn btn-primary" id="signInBtn">Sign in with Google</button>
         </div>
-        <p class="hint" style="margin-top:16px;">Recommended flow: rehearse with both toggles ON, then switch them OFF during the real managed-Chrome demo.</p>
+        <p class="hint" style="margin-top:16px;">Suggested flow: keep the preset on-screen for the executive audience, then change one Layer 2 condition at a time to explain why access is granted or blocked.</p>
       </div>
     </div>
   </div>
@@ -741,54 +890,101 @@
 
 
   <script>
-    const personas = {
-      trusted: {
-        label: 'Trusted employee on managed Chrome + healthy device',
-        deviceId: 'CBCM-BROWSER-MANAGED',
-        help: 'Use this to rehearse the ideal Zero Trust outcome: corporate identity, managed Chrome profile, healthy device posture, and approved location all pass.',
-        checks: [
-          ['Corporate identity', true, 'Signed in with approved Google Workspace account'],
-          ['Managed Chrome profile', true, 'Browser profile is managed by enterprise policy'],
-          ['Approved device posture', true, 'Endpoint Verification or partner posture signal is healthy'],
-          ['Allowed location', true, 'Request comes from allowed region / network'],
-          ['No policy conflicts', true, 'No high-risk policy state detected']
-        ]
+    const contextLabels = {
+      deviceStatus: {
+        personal: 'Personal laptop',
+        unmanaged_company: 'Unmanaged company laptop',
+        managed_company: 'Managed company laptop'
       },
-      personalApproved: {
-        label: 'Personal laptop in approved location',
-        deviceId: 'PERSONAL-LAPTOP',
-        help: 'This is the easiest way to explain Zero Trust to a first-time audience: the user is in an approved location, but the browser profile is unmanaged and the device posture signal is missing, so access is denied.',
-        checks: [
-          ['Corporate identity', true, 'Signed in with approved Google Workspace account'],
-          ['Managed Chrome profile', false, 'Chrome is not managed by enterprise policy'],
-          ['Approved device posture', false, 'Endpoint Verification or partner posture data is unavailable'],
-          ['Allowed location', true, 'Location is allowed'],
-          ['No policy conflicts', true, 'No additional conflict detected']
-        ]
+      devicePosture: {
+        healthy: 'Healthy / latest OS',
+        old_os: 'Old OS version',
+        missing_ev: 'Missing Endpoint Verification'
       },
-      geoBlocked: {
-        label: 'Managed Chrome outside approved location',
-        deviceId: 'CBCM-BROWSER-MANAGED',
-        help: 'Use this to show that good identity and healthy device posture are still not enough when geography or network rules are part of the access level.',
-        checks: [
-          ['Corporate identity', true, 'Signed in with approved Google Workspace account'],
-          ['Managed Chrome profile', true, 'Browser profile is managed by enterprise policy'],
-          ['Approved device posture', true, 'Endpoint Verification or partner posture signal is healthy'],
-          ['Allowed location', false, 'Request is outside approved geography / IP range'],
-          ['No policy conflicts', true, 'No additional conflict detected']
-        ]
+      location: {
+        Indonesia: 'Indonesia',
+        USA: 'USA',
+        Japan: 'Japan'
+      },
+      browserManagement: {
+        unmanaged: 'Unmanaged Chrome profile',
+        managed: 'Managed Chrome profile'
       },
       policyConflict: {
-        label: 'Managed Chrome with device or policy conflict',
-        deviceId: 'CBCM-BROWSER-MANAGED',
-        help: 'Use this to show that a managed browser alone is not enough. Access can still fail when the posture signal is unhealthy or another high-risk policy conflict is present.',
-        checks: [
-          ['Corporate identity', true, 'Signed in with approved Google Workspace account'],
-          ['Managed Chrome profile', true, 'Browser profile is managed by enterprise policy'],
-          ['Approved device posture', false, 'Device posture flagged non-compliant'],
-          ['Allowed location', true, 'Location is allowed'],
-          ['No policy conflicts', false, 'Critical policy conflict found during evaluation']
-        ]
+        none: 'No policy conflict',
+        critical: 'Critical policy conflict'
+      }
+    };
+
+    const accessPolicies = {
+      indonesiaSales: {
+        label: 'Indonesia sales CRM',
+        summary: 'Managed SSO CRM access is granted only when the user signs in with a corporate account from Indonesia, using a managed company laptop, a managed Chrome profile, healthy posture, Chrome 146 or later, and no critical policy conflict.',
+        explainer: 'Use this for the simplest Zero Trust story: the user must be in Indonesia and fully trusted. It is ideal for first-time audiences because every requirement is explicit.',
+        requirements: {
+          location: ['Indonesia'],
+          deviceStatus: ['managed_company'],
+          devicePosture: ['healthy'],
+          browserManagement: ['managed'],
+          minChromeVersion: 146,
+          requireCorporateIdentity: true,
+          requireNoPolicyConflict: true
+        },
+        defaultContext: {
+          email: 'se.admin@bukanbankindo.co.id',
+          location: 'Indonesia',
+          deviceStatus: 'managed_company',
+          devicePosture: 'healthy',
+          browserManagement: 'managed',
+          chromeVersion: '146',
+          policyConflict: 'none'
+        }
+      },
+      japanExec: {
+        label: 'Japan executive workspace',
+        summary: 'Executive access is limited to Japan-based sessions on a managed company laptop with a managed Chrome profile, healthy posture, Chrome 146 or later, and a corporate account.',
+        explainer: 'This policy shows that the same SSO experience can enforce a different geography rule for a different application, even when the identity and device trust are otherwise similar.',
+        requirements: {
+          location: ['Japan'],
+          deviceStatus: ['managed_company'],
+          devicePosture: ['healthy'],
+          browserManagement: ['managed'],
+          minChromeVersion: 146,
+          requireCorporateIdentity: true,
+          requireNoPolicyConflict: true
+        },
+        defaultContext: {
+          email: 'vp.ops@bukanbankindo.co.id',
+          location: 'Japan',
+          deviceStatus: 'managed_company',
+          devicePosture: 'healthy',
+          browserManagement: 'managed',
+          chromeVersion: '146',
+          policyConflict: 'none'
+        }
+      },
+      regionalSupport: {
+        label: 'Regional support portal',
+        summary: 'Regional support staff may access from Indonesia, USA, or Japan, but still require a corporate account, managed company laptop, managed Chrome profile, healthy posture, Chrome 145 or later, and no critical policy conflict.',
+        explainer: 'This is useful when you want to show that one policy can be more flexible on geography while keeping device trust and browser management strict.',
+        requirements: {
+          location: ['Indonesia', 'USA', 'Japan'],
+          deviceStatus: ['managed_company'],
+          devicePosture: ['healthy'],
+          browserManagement: ['managed'],
+          minChromeVersion: 145,
+          requireCorporateIdentity: true,
+          requireNoPolicyConflict: true
+        },
+        defaultContext: {
+          email: 'support.lead@bukanbankindo.co.id',
+          location: 'USA',
+          deviceStatus: 'managed_company',
+          devicePosture: 'healthy',
+          browserManagement: 'managed',
+          chromeVersion: '145',
+          policyConflict: 'none'
+        }
       }
     };
 
@@ -902,48 +1098,180 @@
       document.getElementById('messageModal').style.display = 'none';
     }
 
-    function getSelectedPersona() {
-      return personas[document.getElementById('personaSelect').value];
+    function getSelectedPolicy() {
+      return accessPolicies[document.getElementById('policySelect').value];
+    }
+
+    function labelFor(group, value) {
+      return (contextLabels[group] && contextLabels[group][value]) || value;
+    }
+
+    function getCurrentAccessState() {
+      return {
+        email: (document.getElementById('identityInput').value || 'se.admin@bukanbankindo.co.id').trim(),
+        deviceStatus: document.querySelector('[data-choice-group="deviceStatus"] .choice-btn.active')?.dataset.choiceValue || 'managed_company',
+        devicePosture: document.querySelector('[data-choice-group="devicePosture"] .choice-btn.active')?.dataset.choiceValue || 'healthy',
+        location: document.querySelector('[data-choice-group="location"] .choice-btn.active')?.dataset.choiceValue || 'Indonesia',
+        browserManagement: document.querySelector('[data-choice-group="browserManagement"] .choice-btn.active')?.dataset.choiceValue || 'managed',
+        chromeVersion: document.querySelector('[data-choice-group="chromeVersion"] .choice-btn.active')?.dataset.choiceValue || '146',
+        policyConflict: document.querySelector('[data-choice-group="policyConflict"] .choice-btn.active')?.dataset.choiceValue || 'none'
+      };
+    }
+
+    function getCurrentDeviceId(state) {
+      if (state.deviceStatus === 'managed_company' && state.browserManagement === 'managed') return 'CBCM-MANAGED-CORP-LAPTOP';
+      if (state.deviceStatus === 'managed_company' && state.browserManagement === 'unmanaged') return 'CORP-LAPTOP-UNMANAGED-CHROME';
+      if (state.deviceStatus === 'unmanaged_company') return 'CORP-LAPTOP-NOT-MANAGED';
+      return state.browserManagement === 'managed' ? 'BYOD-MANAGED-CHROME' : 'BYOD-UNMANAGED';
     }
 
     function refreshAccessMeta() {
-      const persona = getSelectedPersona();
-      currentIdentity = (document.getElementById('identityInput').value || 'se.admin@bukanbankindo.co.id').trim();
-      currentDeviceId = persona.deviceId;
+      const state = getCurrentAccessState();
+      currentIdentity = state.email || 'se.admin@bukanbankindo.co.id';
+      currentDeviceId = getCurrentDeviceId(state);
       accessSessionUTC = new Date().toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, ' UTC');
       renderWatermark();
+      return state;
     }
 
-    function updateCriteriaPreview() {
-      const persona = getSelectedPersona();
-      const container = document.getElementById('criteriaPreview');
-      const failed = persona.checks.filter(([, pass]) => !pass);
-      container.innerHTML = persona.checks.map(([label, pass, note]) => `
-        <div class="criteria-row ${pass ? 'pass' : 'fail'}">
-          <div><strong>${label}</strong><div style="margin-top:4px; color:#cbd5e1; font-size:13px;">${note}</div></div>
-          <div class="${pass ? 'status-pass' : 'status-fail'}">${pass ? 'PASS' : 'FAIL'}</div>
-        </div>`).join('');
-      document.getElementById('personaHelp').innerHTML = `<strong>What this preset means</strong><div style="margin-top:6px;" class="hint">${escapeHTML(persona.help)}</div>`;
-      const summary = document.getElementById('decisionSummary');
-      const signInBtn = document.getElementById('signInBtn');
-      if (failed.length) {
-        summary.className = 'decision-banner block';
-        summary.innerHTML = `<strong>Current result: access will be blocked.</strong><div style="margin-top:6px; font-weight:500; color:#fecaca;">Reason: one or more required checks are FAIL. This is useful to explain Zero Trust to first-time viewers.</div>`;
-        signInBtn.textContent = 'Sign in with Google';
+    function applyChoiceSelection(group, value) {
+      const container = document.querySelector(`[data-choice-group="${group}"]`);
+      if (!container) return;
+      container.querySelectorAll('.choice-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.choiceValue === value));
+    }
+
+    function loadPolicyDefaults() {
+      const policy = getSelectedPolicy();
+      const state = policy.defaultContext;
+      document.getElementById('identityInput').value = state.email;
+      applyChoiceSelection('deviceStatus', state.deviceStatus);
+      applyChoiceSelection('devicePosture', state.devicePosture);
+      applyChoiceSelection('location', state.location);
+      applyChoiceSelection('browserManagement', state.browserManagement);
+      applyChoiceSelection('chromeVersion', state.chromeVersion);
+      applyChoiceSelection('policyConflict', state.policyConflict);
+      updateAccessPreview();
+    }
+
+    function evaluateAccess(policy, state) {
+      const version = Number(state.chromeVersion);
+      const corporatePass = /@bukanbankindo\.co\.id$/i.test(state.email);
+      const checks = [
+        {
+          label: 'Corporate identity',
+          pass: policy.requirements.requireCorporateIdentity ? corporatePass : true,
+          required: 'Approved Google Workspace account (@bukanbankindo.co.id)',
+          current: state.email || 'No account entered',
+          detail: corporatePass ? 'Corporate identity matches the approved domain.' : 'Use a corporate Google Workspace account to pass this condition.'
+        },
+        {
+          label: 'Location',
+          pass: policy.requirements.location.includes(state.location),
+          required: policy.requirements.location.join(' or '),
+          current: labelFor('location', state.location),
+          detail: policy.requirements.location.includes(state.location) ? 'Location is inside the approved geography.' : 'Current location is outside the preset geography rule.'
+        },
+        {
+          label: 'Device status',
+          pass: policy.requirements.deviceStatus.includes(state.deviceStatus),
+          required: policy.requirements.deviceStatus.map(v => labelFor('deviceStatus', v)).join(' or '),
+          current: labelFor('deviceStatus', state.deviceStatus),
+          detail: policy.requirements.deviceStatus.includes(state.deviceStatus) ? 'Device ownership and management meet the preset requirement.' : 'The current device type is not trusted for this application.'
+        },
+        {
+          label: 'Device posture',
+          pass: policy.requirements.devicePosture.includes(state.devicePosture),
+          required: policy.requirements.devicePosture.map(v => labelFor('devicePosture', v)).join(' or '),
+          current: labelFor('devicePosture', state.devicePosture),
+          detail: policy.requirements.devicePosture.includes(state.devicePosture) ? 'Endpoint posture is healthy.' : 'The posture signal is unhealthy or missing.'
+        },
+        {
+          label: 'Chrome browser management',
+          pass: policy.requirements.browserManagement.includes(state.browserManagement),
+          required: policy.requirements.browserManagement.map(v => labelFor('browserManagement', v)).join(' or '),
+          current: labelFor('browserManagement', state.browserManagement),
+          detail: policy.requirements.browserManagement.includes(state.browserManagement) ? 'Chrome management state meets policy.' : 'The browser profile is not managed as required.'
+        },
+        {
+          label: 'Chrome version',
+          pass: version >= policy.requirements.minChromeVersion,
+          required: `Chrome ${policy.requirements.minChromeVersion}+`,
+          current: `Chrome ${state.chromeVersion}`,
+          detail: version >= policy.requirements.minChromeVersion ? 'Browser version meets the minimum threshold.' : 'Upgrade Chrome to meet the minimum version gate.'
+        },
+        {
+          label: 'Policy conflict state',
+          pass: policy.requirements.requireNoPolicyConflict ? state.policyConflict === 'none' : true,
+          required: 'No critical policy conflict',
+          current: labelFor('policyConflict', state.policyConflict),
+          detail: state.policyConflict === 'none' ? 'No conflict detected in the current session.' : 'A critical policy conflict is present, so access is blocked.'
+        }
+      ];
+      return {
+        checks,
+        failed: checks.filter(item => !item.pass),
+        allowed: checks.every(item => item.pass)
+      };
+    }
+
+    function renderRequirementChips(policy) {
+      const chips = [
+        'Corporate account',
+        `Location: ${policy.requirements.location.join(' / ')}`,
+        policy.requirements.deviceStatus.map(v => labelFor('deviceStatus', v)).join(' / '),
+        policy.requirements.devicePosture.map(v => labelFor('devicePosture', v)).join(' / '),
+        policy.requirements.browserManagement.map(v => labelFor('browserManagement', v)).join(' / '),
+        `Chrome ${policy.requirements.minChromeVersion}+`,
+        'No critical policy conflict'
+      ];
+      document.getElementById('requirementChips').innerHTML = chips.map(item => `<span class="policy-chip">${escapeHTML(item)}</span>`).join('');
+    }
+
+    function updateAccessPreview() {
+      const policy = getSelectedPolicy();
+      const state = refreshAccessMeta();
+      const result = evaluateAccess(policy, state);
+
+      document.getElementById('policyName').textContent = policy.label;
+      document.getElementById('policySummaryText').textContent = policy.summary;
+      document.getElementById('policyHelp').innerHTML = `<strong>What this preset explains</strong><div style="margin-top:6px;">${escapeHTML(policy.explainer)}</div>`;
+      renderRequirementChips(policy);
+
+      const badge = document.getElementById('decisionBadge');
+      badge.textContent = result.allowed ? 'Access will be granted' : 'Access will be blocked';
+      badge.className = 'badge ' + (result.allowed ? 'good' : 'warn');
+
+      const summary = document.getElementById('currentSessionSummary');
+      if (result.allowed) {
+        summary.className = 'decision-strip good';
+        summary.innerHTML = `<strong>Current result: access will be granted.</strong><div style="margin-top:6px;">Every Layer 2 condition matches the selected policy, so clicking Sign in will open the CRM.</div>`;
       } else {
-        summary.className = 'decision-banner allow';
-        summary.innerHTML = `<strong>Current result: access will be granted.</strong><div style="margin-top:6px; font-weight:500; color:#d1fae5;">Reason: every required check is PASS, so the CRM will open when you click Sign in.</div>`;
-        signInBtn.textContent = 'Sign in with Google';
+        summary.className = 'decision-strip bad';
+        summary.innerHTML = `<strong>Current result: access will be blocked.</strong><div style="margin-top:6px;">Mismatch found in ${result.failed.map(item => item.label).join(', ')}. This is the easiest way to explain why Zero Trust is conditional, not all-or-nothing.</div>`;
       }
-      refreshAccessMeta();
+
+      const container = document.getElementById('criteriaPreview');
+      container.innerHTML = result.checks.map(item => `
+        <div class="criteria-row ${item.pass ? 'pass' : 'fail'}">
+          <div>
+            <strong>${escapeHTML(item.label)}</strong>
+            <div style="margin-top:4px; color:#cbd5e1; font-size:13px;">Required: ${escapeHTML(item.required)}</div>
+            <div style="margin-top:4px; color:#e2e8f0; font-size:13px;">Current: ${escapeHTML(item.current)}</div>
+            <div style="margin-top:6px; color:${item.pass ? '#d1fae5' : '#fecaca'}; font-size:12px;">${escapeHTML(item.detail)}</div>
+          </div>
+          <div class="${item.pass ? 'status-pass' : 'status-fail'}">${item.pass ? 'PASS' : 'FAIL'}</div>
+        </div>`).join('');
+      return result;
     }
 
     function signInFlow() {
       const simulateCAA = document.getElementById('simulateCAA').checked;
       browserSimulation = document.getElementById('browserDecisionPrecheck').checked;
       document.getElementById('browserDecisionToggle').checked = browserSimulation;
-      refreshAccessMeta();
       applyBrowserSimulation();
+
+      const result = updateAccessPreview();
+      const policy = getSelectedPolicy();
 
       if (!simulateCAA) {
         document.getElementById('loginOverlay').style.display = 'none';
@@ -951,12 +1279,9 @@
         return;
       }
 
-      const persona = getSelectedPersona();
-      const failed = persona.checks.filter(c => !c[1]).map(c => `${c[0]}: ${c[2]}`);
-
-      if (failed.length) {
-        showModal('blocked', 'Access denied by context-aware policy', `Preset: ${persona.label}`, failed);
-        addLog('Context-aware access', 'Denied', persona.label);
+      if (!result.allowed) {
+        showModal('blocked', 'Access denied by context-aware policy', `Preset: ${policy.label}`, result.failed.map(item => `${item.label}: Required ${item.required}; current ${item.current}`));
+        addLog('Context-aware access', 'Denied', `${policy.label} • ${result.failed.map(item => item.label).join(', ')}`);
         document.getElementById('modalOkBtn').onclick = () => {
           closeModal();
           document.getElementById('modalOkBtn').onclick = closeModal;
@@ -965,8 +1290,8 @@
       }
 
       document.getElementById('loginOverlay').style.display = 'none';
-      addLog('Context-aware access', 'Allowed', `${persona.label} • ${currentIdentity}`);
-      addLog('Login', 'Allowed', 'All context checks passed');
+      addLog('Context-aware access', 'Allowed', `${policy.label} • ${currentIdentity}`);
+      addLog('Login', 'Allowed', 'All policy conditions matched the current session');
     }
 
     function stageClass(stage) {
@@ -1011,12 +1336,13 @@
         return;
       }
 
-      const text = `CONFIDENTIAL • ${currentIdentity.toUpperCase()} • ${accessSessionUTC}`;
+      const customText = 'CONFIDENTIAL';
+      const text = `${customText} • ${currentIdentity.toUpperCase()} • ${currentDeviceId} • ${accessSessionUTC}`;
       const tiles = [];
       const width = window.innerWidth;
       const height = window.innerHeight;
-      const colStep = 440;
-      const rowStep = 260;
+      const colStep = 360;
+      const rowStep = 220;
 
       for (let y = -120; y < height + 200; y += rowStep) {
         for (let x = -200; x < width + 300; x += colStep) {
@@ -1376,10 +1702,20 @@
       });
     }
 
+    function bindChoiceButtons() {
+      document.querySelectorAll('[data-choice-group] .choice-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          applyChoiceSelection(btn.closest('[data-choice-group]').dataset.choiceGroup, btn.dataset.choiceValue);
+          updateAccessPreview();
+        });
+      });
+    }
+
     function bindEvents() {
       document.querySelectorAll('.nav-item').forEach(item => item.addEventListener('click', () => switchView(item.dataset.view)));
-      document.getElementById('personaSelect').addEventListener('change', updateCriteriaPreview);
-      document.getElementById('identityInput').addEventListener('input', refreshAccessMeta);
+      document.getElementById('policySelect').addEventListener('change', loadPolicyDefaults);
+      document.getElementById('loadPresetContextBtn').addEventListener('click', loadPolicyDefaults);
+      document.getElementById('identityInput').addEventListener('input', updateAccessPreview);
       document.getElementById('signInBtn').addEventListener('click', signInFlow);
       document.getElementById('browserDecisionToggle').addEventListener('change', applyBrowserSimulation);
       document.getElementById('watermarkToggle').addEventListener('change', applyWatermark);
@@ -1394,11 +1730,12 @@
       window.addEventListener('resize', renderWatermark);
       bindPipelineViewToggle();
       bindClipboardContextMenu();
+      bindChoiceButtons();
     }
 
     buildDatabase();
     bindEvents();
-    updateCriteriaPreview();
+    loadPolicyDefaults();
     renderStats();
     renderContacts();
     renderPipeline();
