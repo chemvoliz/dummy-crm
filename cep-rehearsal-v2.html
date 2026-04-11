@@ -46,14 +46,14 @@
       position: absolute;
       transform: rotate(-24deg);
       transform-origin: center;
-      color: rgba(220, 38, 38, 0.18);
-      font-size: 24px;
+      color: rgba(185, 28, 28, 0.09);
+      font-size: 21px;
       letter-spacing: 0.12em;
       font-weight: 800;
       white-space: nowrap;
       text-transform: uppercase;
       user-select: none;
-      text-shadow: 0 0 1px rgba(255,255,255,0.12);
+      text-shadow: none;
     }
     nav {
       width: 280px;
@@ -251,26 +251,38 @@
     .log-item { padding: 12px 0; border-bottom: 1px solid #edf2f7; font-size: 14px; }
     .log-item:last-child { border-bottom: none; }
     .login-overlay {
-      inset: 0; background: radial-gradient(circle at top right, #1d4ed8 0%, #0f172a 45%, #020617 100%); z-index: 100;
+      inset: 0;
+      background: radial-gradient(circle at top right, #1d4ed8 0%, #0f172a 45%, #020617 100%);
+      z-index: 100;
       padding: 24px;
-      overflow: auto;
       display: flex;
       align-items: flex-start;
       justify-content: center;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior: contain;
     }
     .login-card {
-      width: min(920px, 100%); background: white; border-radius: 28px; box-shadow: 0 28px 80px rgba(2,6,23,0.4); overflow: hidden;
-      display: grid; grid-template-columns: 1.1fr 0.9fr;
-      max-height: calc(100vh - 48px);
-      margin: auto 0;
+      width: min(920px, calc(100vw - 48px));
+      background: white;
+      border-radius: 28px;
+      box-shadow: 0 28px 80px rgba(2,6,23,0.4);
+      overflow: visible;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      margin: 0 auto;
+      min-height: min(720px, calc(100dvh - 48px));
     }
-    .login-pane { padding: 30px; overflow: auto; }
+    .login-pane {
+      padding: 30px;
+      overflow: visible;
+      min-height: 0;
+    }
     .login-actions {
-      position: sticky;
-      bottom: 0;
-      margin: 20px -30px -30px;
-      padding: 16px 30px 20px;
-      background: linear-gradient(to top, rgba(255,255,255,1) 55%, rgba(255,255,255,0.96) 78%, rgba(255,255,255,0));
+      position: static;
+      margin-top: 20px;
+      padding-top: 16px;
+      background: transparent;
       border-top: 1px solid rgba(226, 232, 240, 0.9);
     }
     .login-pane.dark { background: linear-gradient(180deg, #0f172a, #111827); color: white; }
@@ -527,6 +539,129 @@
     }
     .stack { display:grid; gap: 10px; }
 
+    .sim-toggle-stack { display:grid; gap: 12px; margin-bottom: 14px; }
+    .screenshot-grid {
+      display:grid;
+      grid-template-columns: 1.1fr 1fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+    .screenshot-pane {
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: white;
+      padding: 18px;
+    }
+    .scene-toggle { display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 14px; }
+    .desktop-scene, .capture-preview {
+      position: relative;
+      min-height: 280px;
+      border-radius: 18px;
+      overflow: hidden;
+      background: linear-gradient(135deg, #0f172a, #1d4ed8);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+    .desktop-scene::after, .capture-preview::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(255,255,255,0.08), transparent 45%);
+      pointer-events: none;
+    }
+    .browser-sim {
+      position: absolute;
+      border-radius: 16px;
+      overflow: hidden;
+      background: white;
+      border: 1px solid rgba(148, 163, 184, 0.45);
+      box-shadow: 0 20px 44px rgba(15, 23, 42, 0.22);
+    }
+    .browser-sim.sensitive { left: 22px; top: 26px; width: 56%; height: 188px; }
+    .browser-sim.public { right: 22px; top: 86px; width: 38%; height: 150px; }
+    .browser-topbar {
+      height: 34px;
+      padding: 0 12px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+      background: #e2e8f0;
+      border-bottom: 1px solid var(--line);
+    }
+    .browser-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: #94a3b8;
+    }
+    .browser-body {
+      padding: 14px;
+      display:grid;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--soft);
+      background: linear-gradient(180deg, #ffffff, #f8fafc);
+      min-height: calc(100% - 34px);
+    }
+    .browser-chip {
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      font-weight: 700;
+      width: fit-content;
+    }
+    .browser-line {
+      height: 10px;
+      border-radius: 999px;
+      background: #e2e8f0;
+    }
+    .browser-line.long { width: 100%; }
+    .browser-line.mid { width: 74%; }
+    .browser-line.short { width: 42%; }
+    .protected-blackout, .protected-blank {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+    }
+    .protected-blackout {
+      background: #020617;
+      color: rgba(255,255,255,0.92);
+    }
+    .protected-blank {
+      background: #f8fafc;
+      color: #334155;
+      border: 1px dashed #cbd5e1;
+    }
+    .capture-label {
+      position: absolute;
+      left: 14px;
+      bottom: 14px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.92);
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 800;
+      box-shadow: 0 6px 16px rgba(15, 23, 42, 0.14);
+    }
+    #decisionBadge { white-space: nowrap; }
+    .screenshot-header-grid { display:grid; gap:12px; margin-bottom: 14px; }
+    .lab-group { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .lab-group-label { font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:0.08em; color: var(--soft); min-width: 82px; }
+    .lab-actions { display:flex; gap:10px; flex-wrap:wrap; margin-bottom: 14px; }
+    .demo-panel { display:none; }
+    .demo-panel.active { display:grid; }
+
     @media (max-width: 1100px) {
       .grid4, .grid3, .grid2, .action-grid, .login-card { grid-template-columns: 1fr; }
       nav { display: none; }
@@ -535,9 +670,10 @@
       header { align-items: flex-start; flex-direction: column; }
       .top-controls { justify-content: flex-start; }
       .login-overlay { padding: 16px; }
-      .login-card { max-height: none; }
-      .login-pane { max-height: none; overflow: visible; }
-      .login-actions { margin: 20px -30px -30px; }
+      .login-card { width: 100%; min-height: auto; }
+      .login-pane { overflow: visible; }
+      .login-actions { margin-top: 20px; }
+      .screenshot-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -567,7 +703,24 @@
       <div class="login-pane">
         <div class="kicker">Demo controls</div>
         <h2 style="margin:10px 0 6px; font-size:28px; letter-spacing:-0.03em;">Choose policy and current context</h2>
-        <p class="hint" style="margin-bottom:20px;">Keep the clean preset-first story for business users, then open Layer 2 to show exactly which condition causes the sign-in to pass or fail.</p>
+        <p class="hint" style="margin-bottom:20px;">Select the required policy, then change the current session to see exactly why sign-in is granted or blocked.</p>
+
+        <div class="sim-toggle-stack">
+          <div class="toggle-card" style="padding:12px 14px;">
+            <label class="switch"><input type="checkbox" id="simulateCAA" checked><span class="slider"></span></label>
+            <div>
+              <strong>Simulate Context-Aware Access</strong>
+              <small>Shows allow or deny before the site opens</small>
+            </div>
+          </div>
+          <div class="toggle-card" style="padding:12px 14px;">
+            <label class="switch"><input type="checkbox" id="browserDecisionPrecheck" checked><span class="slider"></span></label>
+            <div>
+              <strong>Start with browser simulation ON</strong>
+              <small>Masks PII and blocks monitored actions after login</small>
+            </div>
+          </div>
+        </div>
 
         <div class="layer-card">
           <div class="layer-title">Layer 1 · Access policy preset</div>
@@ -645,32 +798,11 @@
         <div class="decision-strip good" id="currentSessionSummary">
           Current result: access will be granted.
         </div>
-
-        <div class="field-row" style="margin-top:14px;">
-          <div class="toggle-card" style="padding:12px 14px;">
-            <label class="switch"><input type="checkbox" id="simulateCAA" checked><span class="slider"></span></label>
-            <div>
-              <strong>Simulate Context-Aware Access</strong>
-              <small>Shows allow or deny before the site opens</small>
-            </div>
-          </div>
-        </div>
-
-        <div class="field-row">
-          <div class="toggle-card" style="padding:12px 14px;">
-            <label class="switch"><input type="checkbox" id="browserDecisionPrecheck" checked><span class="slider"></span></label>
-            <div>
-              <strong>Start with browser simulation ON</strong>
-              <small>Masks PII and blocks monitored actions after login</small>
-            </div>
-          </div>
-        </div>
-
         <div class="login-actions">
           <div class="row">
             <button class="btn btn-primary" id="signInBtn">Sign in with Google</button>
           </div>
-          <p class="hint" style="margin-top:14px;">Suggested flow: keep the preset on-screen for the executive audience, then change one Layer 2 condition at a time to explain why access is granted or blocked.</p>
+          <p class="hint" style="margin-top:14px;">Suggested flow: change one Layer 2 condition at a time to show which trust signal causes access to pass or fail.</p>
         </div>
       </div>
     </div>
@@ -713,6 +845,7 @@
             <small>Rehearsal-only visual for sensitive-site demo</small>
           </div>
         </div>
+        <button class="btn btn-outline" id="signOutBtn" type="button" disabled>Sign out</button>
         <div class="badge" id="modeBadge">Mode: Real demo</div>
       </div>
     </header>
@@ -832,20 +965,69 @@
           <div class="hero" style="margin-bottom:16px;">
             <div>
               <h3 class="section-title" style="margin-bottom:6px;">Clipboard rehearsal lab</h3>
-              <p class="hint" style="margin:0;">Highlight text below, then try right-click copy or <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">C</span>. Click in the destination box and try right-click paste or <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">V</span>.</p>
+              <p class="hint" style="margin:0;">Highlight text below, then try right-click copy or <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">C</span>. Click in the destination box and try right-click paste or <span class="kbd">Ctrl</span>/<span class="kbd">Cmd</span> + <span class="kbd">V</span>. Only selected or pasted text that matches the simulated DLP patterns should be blocked in rehearsal mode.</p>
             </div>
           </div>
           <div class="clipboard-grid">
             <div class="stack">
-              <div class="hint"><strong>Selectable sensitive source</strong> — use this to simulate clipboard DLP on highlighted content.</div>
+              <div class="hint"><strong>Selectable mixed-content source</strong> — highlight only the text you want to copy. Public text should pass. Only snippets that match the simulated DLP patterns should trigger enforcement.</div>
               <div class="selectable-box mono" id="clipboardSource" tabindex="0"></div>
             </div>
             <div class="stack">
-              <div class="hint"><strong>Paste destination</strong> — monitored destination for keyboard and right-click paste flows.</div>
+              <div class="hint"><strong>Paste destination</strong> — pasted text is scanned first. Non-sensitive text is allowed, while policy-matching text is blocked in rehearsal mode.</div>
               <textarea class="textarea mono" id="clipboardTarget" placeholder="Paste destination for the rehearsal..."></textarea>
             </div>
           </div>
         </div>
+
+        <div class="card" style="margin-top:18px;">
+          <div class="hero" style="margin-bottom:16px;">
+            <div>
+              <h3 class="section-title" style="margin-bottom:6px;">Screenshot protection lab</h3>
+              <p class="hint" style="margin:0;">This rehearsal mirrors Chrome Enterprise Premium URL-visited protection: on Windows, protected content is blacked out; on Mac, protected content disappears from the protected preview.</p>
+            </div>
+          </div>
+          <div class="screenshot-header-grid">
+            <div class="lab-group">
+              <span class="lab-group-label">Platform</span>
+              <button class="seg-btn active" type="button" data-shot-os="windows">Windows</button>
+              <button class="seg-btn" type="button" data-shot-os="mac">Mac</button>
+            </div>
+            <div class="lab-group">
+              <span class="lab-group-label">Demo type</span>
+              <button class="seg-btn active" type="button" data-shot-demo="screenShare">Screen share</button>
+              <button class="seg-btn" type="button" data-shot-demo="screenshot">Screenshot</button>
+            </div>
+          </div>
+          <div class="lab-actions">
+            <button class="btn btn-outline" type="button" id="startShareBtn">Start screen share</button>
+            <button class="btn btn-outline" type="button" id="takeScreenshotBtn" style="display:none;">Take full-screen screenshot</button>
+            <button class="btn btn-outline" type="button" id="resetShotBtn">Reset preview</button>
+          </div>
+
+          <div class="screenshot-grid demo-panel active" id="screenSharePanel">
+            <div class="screenshot-pane">
+              <div class="hint" style="margin-bottom:12px;"><strong>Before</strong> — normal desktop view before sharing starts.</div>
+              <div class="desktop-scene" id="shareBeforeScene"></div>
+            </div>
+            <div class="screenshot-pane">
+              <div class="hint" style="margin-bottom:12px;"><strong>After</strong> — protected live share preview after you click Start screen share.</div>
+              <div class="capture-preview" id="shareAfterScene"></div>
+            </div>
+          </div>
+
+          <div class="screenshot-grid demo-panel" id="screenshotPanel">
+            <div class="screenshot-pane">
+              <div class="hint" style="margin-bottom:12px;"><strong>Before</strong> — normal desktop view before capture.</div>
+              <div class="desktop-scene" id="shotBeforeScene"></div>
+            </div>
+            <div class="screenshot-pane">
+              <div class="hint" style="margin-bottom:12px;"><strong>After</strong> — captured result preview after you click Take full-screen screenshot.</div>
+              <div class="capture-preview" id="shotAfterScene"></div>
+            </div>
+          </div>
+        </div>
+
 
         <div class="card" style="margin-top:18px;">
           <h3 class="section-title">Audit Activity Log</h3>
@@ -940,7 +1122,7 @@
       indonesiaSales: {
         label: 'Indonesia sales CRM',
         summary: 'Managed SSO CRM access is granted only when the user signs in with a corporate account from Indonesia, using a managed company laptop, a managed Chrome profile, healthy posture, Chrome 146 or later, and no critical policy conflict.',
-        explainer: 'Use this for the simplest Zero Trust story: the user must be in Indonesia and fully trusted. It is ideal for first-time audiences because every requirement is explicit.',
+        explainer: 'The user must be in Indonesia and fully trusted.',
         requirements: {
           location: ['Indonesia'],
           deviceStatus: ['managed_company'],
@@ -963,7 +1145,7 @@
       japanExec: {
         label: 'Japan executive workspace',
         summary: 'Executive access is limited to Japan-based sessions on a managed company laptop with a managed Chrome profile, healthy posture, Chrome 146 or later, and a corporate account.',
-        explainer: 'This policy shows that the same SSO experience can enforce a different geography rule for a different application, even when the identity and device trust are otherwise similar.',
+        explainer: 'The user must access the executive workspace from Japan on a fully trusted corporate setup.',
         requirements: {
           location: ['Japan'],
           deviceStatus: ['managed_company'],
@@ -986,7 +1168,7 @@
       regionalSupport: {
         label: 'Regional support portal',
         summary: 'Regional support staff may access from Indonesia, USA, or Japan, but still require a corporate account, managed company laptop, managed Chrome profile, healthy posture, Chrome 145 or later, and no critical policy conflict.',
-        explainer: 'This is useful when you want to show that one policy can be more flexible on geography while keeping device trust and browser management strict.',
+        explainer: 'The user can sign in from Indonesia, the USA, or Japan, but only from a fully trusted corporate setup.',
         requirements: {
           location: ['Indonesia', 'USA', 'Japan'],
           deviceStatus: ['managed_company'],
@@ -1033,6 +1215,11 @@
     let currentIdentity = 'se.admin@bukanbankindo.co.id';
     let currentDeviceId = 'CBCM-BROWSER-MANAGED';
     let accessSessionUTC = new Date().toISOString().replace('T', ' ').replace(/\.\d{3}Z$/, ' UTC');
+    let screenshotOS = 'windows';
+    let screenshotDemoMode = 'screenShare';
+    let screenshotShareActive = false;
+    let screenshotCaptured = false;
+    let isSignedIn = false;
 
     function randPhone(seed) {
       return '+62 812-' + String(10000000 + seed * 7919).slice(0,8);
@@ -1254,7 +1441,7 @@
 
       document.getElementById('policyName').textContent = policy.label;
       document.getElementById('policySummaryText').textContent = policy.summary;
-      document.getElementById('policyHelp').innerHTML = `<strong>What this preset explains</strong><div style="margin-top:6px;">${escapeHTML(policy.explainer)}</div>`;
+      document.getElementById('policyHelp').innerHTML = `<strong>Scenario</strong><div style="margin-top:6px;">${escapeHTML(policy.explainer)}</div>`;
       renderRequirementChips(policy);
 
       const badge = document.getElementById('decisionBadge');
@@ -1264,10 +1451,10 @@
       const summary = document.getElementById('currentSessionSummary');
       if (result.allowed) {
         summary.className = 'decision-strip good';
-        summary.innerHTML = `<strong>Current result: access will be granted.</strong><div style="margin-top:6px;">Every Layer 2 condition matches the selected policy, so clicking Sign in will open the CRM.</div>`;
+        summary.innerHTML = `<strong>Current result: access will be granted.</strong><div style="margin-top:6px;">Every Layer 2 condition matches the selected policy.</div>`;
       } else {
         summary.className = 'decision-strip bad';
-        summary.innerHTML = `<strong>Current result: access will be blocked.</strong><div style="margin-top:6px;">Mismatch found in ${result.failed.map(item => item.label).join(', ')}. This is the easiest way to explain why Zero Trust is conditional, not all-or-nothing.</div>`;
+        summary.innerHTML = `<strong>Current result: access will be blocked.</strong><div style="margin-top:6px;">Mismatch found in ${result.failed.map(item => item.label).join(', ')}. At least one required condition is not satisfied for this policy.</div>`;
       }
 
       const container = document.getElementById('criteriaPreview');
@@ -1284,6 +1471,32 @@
       return result;
     }
 
+
+    function showLoginOverlay() {
+      const overlay = document.getElementById('loginOverlay');
+      overlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      const signOutBtn = document.getElementById('signOutBtn');
+      if (signOutBtn) signOutBtn.disabled = true;
+    }
+
+    function hideLoginOverlay() {
+      const overlay = document.getElementById('loginOverlay');
+      overlay.style.display = 'none';
+      document.body.style.overflow = '';
+      const signOutBtn = document.getElementById('signOutBtn');
+      if (signOutBtn) signOutBtn.disabled = false;
+    }
+
+    function signOutFlow() {
+      isSignedIn = false;
+      closeDrawer();
+      closeModal();
+      hideContextMenu();
+      showLoginOverlay();
+      addLog('Login', 'Signed out', `${currentIdentity} returned to the access-check screen`);
+    }
+
     function signInFlow() {
       const simulateCAA = document.getElementById('simulateCAA').checked;
       browserSimulation = document.getElementById('browserDecisionPrecheck').checked;
@@ -1294,7 +1507,8 @@
       const policy = getSelectedPolicy();
 
       if (!simulateCAA) {
-        document.getElementById('loginOverlay').style.display = 'none';
+        isSignedIn = true;
+        hideLoginOverlay();
         addLog('Login', 'Allowed', 'Context-aware access simulation disabled');
         return;
       }
@@ -1309,9 +1523,117 @@
         return;
       }
 
-      document.getElementById('loginOverlay').style.display = 'none';
+      isSignedIn = true;
+      hideLoginOverlay();
       addLog('Context-aware access', 'Allowed', `${policy.label} • ${currentIdentity}`);
       addLog('Login', 'Allowed', 'All policy conditions matched the current session');
+    }
+
+
+    function screenshotWindowHTML(kind, protectedState = 'normal') {
+      const protectedOverlay = protectedState === 'blackout'
+        ? '<div class="protected-blackout">Protected content blacked out in protected preview</div>'
+        : protectedState === 'blank'
+        ? '<div class="protected-blank">Protected content removed from protected preview</div>'
+        : '';
+      const label = kind === 'sensitive'
+        ? '<div class="browser-chip">Sensitive CRM tab</div>'
+        : '<div class="browser-chip" style="background:#ecfccb;color:#3f6212;">Non-sensitive tab</div>';
+      return `
+        <div class="browser-sim ${kind}">
+          <div class="browser-topbar">
+            <span class="browser-dot"></span><span class="browser-dot"></span><span class="browser-dot"></span>
+            <span style="font-size:12px;font-weight:700;color:#475569;">${kind === 'sensitive' ? 'chemvoliz.github.io / CRM' : 'public knowledge base'}</span>
+          </div>
+          <div class="browser-body">
+            ${label}
+            <div class="browser-line long"></div>
+            <div class="browser-line mid"></div>
+            <div class="browser-line short"></div>
+            <div class="browser-line long"></div>
+          </div>
+          ${protectedOverlay}
+        </div>`;
+    }
+
+    function getProtectedState() {
+      if (!browserSimulation) return 'normal';
+      return screenshotOS === 'windows' ? 'blackout' : 'blank';
+    }
+
+    function screenshotSceneHTML(label, protectedState = 'normal') {
+      return `
+        ${screenshotWindowHTML('sensitive', protectedState)}
+        ${screenshotWindowHTML('public')}
+        <div class="capture-label">${label}</div>
+      `;
+    }
+
+    function resetShotDemo(silent = false) {
+      screenshotShareActive = false;
+      screenshotCaptured = false;
+      renderScreenshotLab();
+      if (!silent) {
+        addLog('Protected preview', 'Reset', `Reset ${screenshotDemoMode === 'screenShare' ? 'screen share' : 'screenshot'} preview`);
+      }
+    }
+
+    function renderScreenshotLab() {
+      const shareBefore = document.getElementById('shareBeforeScene');
+      const shareAfter = document.getElementById('shareAfterScene');
+      const shotBefore = document.getElementById('shotBeforeScene');
+      const shotAfter = document.getElementById('shotAfterScene');
+      if (!shareBefore || !shareAfter || !shotBefore || !shotAfter) return;
+
+      const osLabel = screenshotOS === 'windows' ? 'Windows' : 'Mac';
+      const protectedState = getProtectedState();
+
+      shareBefore.innerHTML = screenshotSceneHTML(`Desktop scene before share · ${osLabel}`, 'normal');
+      shareAfter.innerHTML = screenshotSceneHTML(
+        screenshotShareActive
+          ? (browserSimulation ? `Protected live share preview · ${osLabel}` : `Unrestricted live share preview · ${osLabel}`)
+          : `Live share preview waiting to start · ${osLabel}`,
+        screenshotShareActive ? protectedState : 'normal'
+      );
+
+      shotBefore.innerHTML = screenshotSceneHTML(`Desktop scene before capture · ${osLabel}`, 'normal');
+      shotAfter.innerHTML = screenshotSceneHTML(
+        screenshotCaptured
+          ? (browserSimulation ? `Protected screenshot preview · ${osLabel}` : `Unrestricted screenshot preview · ${osLabel}`)
+          : `Captured result waiting to run · ${osLabel}`,
+        screenshotCaptured ? protectedState : 'normal'
+      );
+
+      document.querySelectorAll('[data-shot-os]').forEach(btn => btn.classList.toggle('active', btn.dataset.shotOs === screenshotOS));
+      document.querySelectorAll('[data-shot-demo]').forEach(btn => btn.classList.toggle('active', btn.dataset.shotDemo === screenshotDemoMode));
+      document.getElementById('screenSharePanel').classList.toggle('active', screenshotDemoMode === 'screenShare');
+      document.getElementById('screenshotPanel').classList.toggle('active', screenshotDemoMode === 'screenshot');
+      document.getElementById('startShareBtn').style.display = screenshotDemoMode === 'screenShare' ? 'inline-flex' : 'none';
+      document.getElementById('takeScreenshotBtn').style.display = screenshotDemoMode === 'screenshot' ? 'inline-flex' : 'none';
+    }
+
+    function startScreenShareDemo() {
+      screenshotShareActive = true;
+      renderScreenshotLab();
+      const detail = browserSimulation
+        ? (screenshotOS === 'windows'
+          ? 'Windows live share preview shows protected content blacked out.'
+          : 'Mac live share preview shows protected content removed from the shared view.')
+        : 'Browser simulation is off, so the shared preview remains unchanged.';
+      addLog('Screen-share protection', browserSimulation ? 'Protected preview' : 'Unprotected preview', detail);
+      showModal('allowed', 'Screen-share preview updated', detail);
+    }
+
+    function takeScreenshotDemo() {
+      screenshotCaptured = true;
+      renderScreenshotLab();
+      const detail = browserSimulation
+        ? (screenshotOS === 'windows'
+          ? 'Windows screenshot preview shows protected content blacked out.'
+          : 'Mac screenshot preview shows protected content removed from the captured image.')
+        : 'Browser simulation is off, so the screenshot preview remains unchanged.';
+      addLog('Screenshot protection', browserSimulation ? 'Protected preview' : 'Unprotected preview', detail);
+      showModal('allowed', 'Screenshot preview updated', detail);
     }
 
     function stageClass(stage) {
@@ -1338,6 +1660,7 @@
       renderContacts();
       renderPipeline();
       buildClipboardSource();
+      renderScreenshotLab();
       if (document.getElementById('drawer').classList.contains('open')) openDrawer(selectedIndex);
     }
 
@@ -1361,12 +1684,12 @@
       const tiles = [];
       const width = window.innerWidth;
       const height = window.innerHeight;
-      const colStep = 360;
-      const rowStep = 220;
+      const colStep = 520;
+      const rowStep = 280;
 
       for (let y = -120; y < height + 200; y += rowStep) {
         for (let x = -200; x < width + 300; x += colStep) {
-          tiles.push(`<div class="watermark-tile" style="left:${x + ((y / rowStep) % 2 ? 90 : 0)}px; top:${y}px;">${escapeHTML(text)}</div>`);
+          tiles.push(`<div class="watermark-tile" style="left:${x + ((y / rowStep) % 2 ? 130 : 0)}px; top:${y}px;">${escapeHTML(text)}</div>`);
         }
       }
       layer.innerHTML = tiles.join('');
@@ -1579,12 +1902,22 @@
     function buildClipboardSource() {
       const source = document.getElementById('clipboardSource');
       if (!source) return;
-      const text = [
+      const safeProjectText = [
         `Prepared for: ${currentIdentity}`,
-        'Customer sample:',
-        ...database.slice(0, 6).map((d, i) => `${i + 1}. ${d.name} | ${d.email} | ${d.nik} | ${d.npwp} | ${d.phone}`)
+        'PUBLIC / NON-SENSITIVE SAMPLE',
+        'Quarterly pipeline review for Jakarta region.',
+        'Meeting agenda: pricing alignment, rollout timeline, user training, and executive demo follow-up.',
+        'Reference code: CRM-DEMO-ALPHA.',
+        '',
+        'SENSITIVE SAMPLE',
+        ...database.slice(0, 4).map((d, i) => `${i + 1}. ${d.name} | ${d.email} | ${d.nik} | ${d.npwp} | ${d.phone}`),
+        '',
+        'INTERNAL BUT NON-PII SAMPLE',
+        'Assigned solution engineer: R. Pratama',
+        'Target milestone: board demo on Friday at 14:00 Jakarta time.',
+        'Region focus: Indonesia and Singapore.'
       ].join('\n');
-      source.textContent = browserSimulation ? text : text;
+      source.textContent = safeProjectText;
     }
 
     function getSourceSelectionText() {
@@ -1618,29 +1951,61 @@
       return simulatedClipboard;
     }
 
+    function detectSensitiveClipboardContent(text) {
+      const value = String(text || '').trim();
+      if (!value) return { matched: false, reasons: [] };
+
+      const reasons = [];
+      const emailRegex = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/ig;
+      const nikRegex = /\b\d{16}\b/g;
+      const npwpRegex = /\b\d{2}\.\d{3}\.\d{3}\.\d-\d{3}\.\d{3}\b/g;
+      const phoneRegex = /\+62\s?8\d{2}-?\d{4}-?\d{4,5}/g;
+      const cardRegex = /\b(?:\d[ -]*?){13,16}\b/g;
+
+      const emails = value.match(emailRegex) || [];
+      const niks = value.match(nikRegex) || [];
+      const npwps = value.match(npwpRegex) || [];
+      const phones = value.match(phoneRegex) || [];
+      const cards = value.match(cardRegex) || [];
+
+      if (emails.length) reasons.push(`${emails.length} email address match${emails.length > 1 ? 'es' : ''}`);
+      if (niks.length) reasons.push(`${niks.length} NIK-style match${niks.length > 1 ? 'es' : ''}`);
+      if (npwps.length) reasons.push(`${npwps.length} NPWP-style match${npwps.length > 1 ? 'es' : ''}`);
+      if (phones.length) reasons.push(`${phones.length} phone number match${phones.length > 1 ? 'es' : ''}`);
+      if (cards.length) reasons.push(`${cards.length} payment-card-style match${cards.length > 1 ? 'es' : ''}`);
+
+      return { matched: reasons.length > 0, reasons };
+    }
+
     async function handleCopy(text, methodLabel) {
       if (!text) {
         showModal('decision', 'No text selected', 'Highlight some text first, or use the bulk copy button.');
         return;
       }
-      if (browserSimulation) return blockedAction('Copy', `Sensitive text matched clipboard DLP policy via ${methodLabel}.`);
+      const inspection = detectSensitiveClipboardContent(text);
+      if (browserSimulation && inspection.matched) {
+        return blockedAction('Copy', `Selected text matched simulated DLP policy via ${methodLabel}: ${inspection.reasons.join(', ')}.`);
+      }
       await writeClipboardText(text);
-      addLog('Copy', 'Allowed', `Clipboard write via ${methodLabel}`);
-      showModal('allowed', 'Clipboard write complete', `Sensitive text was copied via ${methodLabel}.`);
+      addLog('Copy', browserSimulation && !inspection.matched ? 'Allowed (non-sensitive)' : 'Allowed', `Clipboard write via ${methodLabel}${inspection.matched ? ' • matched: ' + inspection.reasons.join(', ') : ' • no sensitive match'}`);
+      showModal('allowed', 'Clipboard write complete', inspection.matched ? `The copied text matched a sensitive pattern, but the browser simulation is off, so the copy completed via ${methodLabel}.` : `The copied text did not match the simulated DLP patterns, so the copy completed via ${methodLabel}.`);
     }
 
     async function handlePaste(methodLabel) {
-      if (browserSimulation) return blockedAction('Paste', `Sensitive text entry matched clipboard DLP policy via ${methodLabel}.`);
       const target = document.getElementById('clipboardTarget');
       const text = await readClipboardText();
       if (!text) {
         showModal('decision', 'Clipboard empty', 'No clipboard text is available yet. Copy something first.');
         return;
       }
+      const inspection = detectSensitiveClipboardContent(text);
+      if (browserSimulation && inspection.matched) {
+        return blockedAction('Paste', `Clipboard content matched simulated DLP policy via ${methodLabel}: ${inspection.reasons.join(', ')}.`);
+      }
       const prefix = target.value ? '\n' : '';
       target.value += prefix + text;
-      addLog('Paste', 'Allowed', `Clipboard read via ${methodLabel}`);
-      showModal('allowed', 'Paste completed', `Sensitive text was pasted via ${methodLabel}.`);
+      addLog('Paste', browserSimulation && !inspection.matched ? 'Allowed (non-sensitive)' : 'Allowed', `Clipboard read via ${methodLabel}${inspection.matched ? ' • matched: ' + inspection.reasons.join(', ') : ' • no sensitive match'}`);
+      showModal('allowed', 'Paste completed', inspection.matched ? `The pasted text matched a sensitive pattern, but the browser simulation is off, so the paste completed via ${methodLabel}.` : `The pasted text did not match the simulated DLP patterns, so the paste completed via ${methodLabel}.`);
     }
 
     function hideContextMenu() {
@@ -1676,7 +2041,7 @@
         event.preventDefault();
         showContextMenu(event.clientX, event.clientY, [
           { label: 'Copy selected text', onClick: () => handleCopy(selected, 'right-click menu') },
-          { label: 'Copy full sensitive block', onClick: () => handleCopy(source.textContent, 'right-click menu') }
+          { label: 'Copy full source block', onClick: () => handleCopy(source.textContent, 'right-click menu') }
         ]);
       });
 
@@ -1737,6 +2102,7 @@
       document.getElementById('loadPresetContextBtn').addEventListener('click', loadPolicyDefaults);
       document.getElementById('identityInput').addEventListener('input', updateAccessPreview);
       document.getElementById('signInBtn').addEventListener('click', signInFlow);
+      document.getElementById('signOutBtn').addEventListener('click', signOutFlow);
       document.getElementById('browserDecisionToggle').addEventListener('change', applyBrowserSimulation);
       document.getElementById('watermarkToggle').addEventListener('change', applyWatermark);
       document.getElementById('searchInput').addEventListener('input', e => { searchTerm = e.target.value; currentPage = 1; renderContacts(); renderPipeline(); });
@@ -1751,15 +2117,32 @@
       bindPipelineViewToggle();
       bindClipboardContextMenu();
       bindChoiceButtons();
+
+      document.querySelectorAll('[data-shot-os]').forEach(btn => btn.addEventListener('click', () => {
+        screenshotOS = btn.dataset.shotOs;
+        resetShotDemo(true);
+      }));
+      document.querySelectorAll('[data-shot-demo]').forEach(btn => btn.addEventListener('click', () => {
+        screenshotDemoMode = btn.dataset.shotDemo;
+        resetShotDemo(true);
+      }));
+      const startShareBtn = document.getElementById('startShareBtn');
+      if (startShareBtn) startShareBtn.addEventListener('click', startScreenShareDemo);
+      const takeScreenshotBtn = document.getElementById('takeScreenshotBtn');
+      if (takeScreenshotBtn) takeScreenshotBtn.addEventListener('click', takeScreenshotDemo);
+      const resetShotBtn = document.getElementById('resetShotBtn');
+      if (resetShotBtn) resetShotBtn.addEventListener('click', () => resetShotDemo(false));
     }
 
     buildDatabase();
     bindEvents();
+    showLoginOverlay();
     loadPolicyDefaults();
     renderStats();
     renderContacts();
     renderPipeline();
     buildClipboardSource();
+    renderScreenshotLab();
     applyWatermark();
     addLog('Page ready', 'Info', 'Demo page initialized');
   </script>
